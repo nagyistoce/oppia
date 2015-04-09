@@ -90,6 +90,26 @@ SIDEBAR_MENU_ADDITIONAL_LINKS = config_domain.ConfigProperty(
         'icon_filename': 'comment.png',
     }])
 
+SOCIAL_MEDIA_BUTTONS = config_domain.ConfigProperty(
+    'social_media_buttons', {
+        'type': 'list',
+        'items': {
+            'type': 'dict',
+            'properties': [{
+                'name': 'link',
+                'description': 'The link to open in a new tab',
+                'schema': {'type': 'unicode'},
+            }, {
+                'name': 'icon_filename',
+                'description': (
+                    'Filename of the social media icon (in /images/social)'),
+                'schema': {'type': 'unicode'},
+            }]
+        }
+    },
+    'Links and icon filenames for the social media buttons in the sidebar.',
+    default_value=[])
+
 
 def require_user(handler):
     """Decorator that checks if a user is associated to the current session."""
@@ -214,6 +234,7 @@ class BaseHandler(webapp2.RequestHandler):
             email = current_user_services.get_user_email(self.user)
             user_settings = user_services.get_or_create_user(
                 self.user_id, email)
+            self.values['user_email'] = user_settings.email
 
             if self.REDIRECT_UNFINISHED_SIGNUPS and not user_settings.username:
                 _clear_login_cookies(self.response.headers)
@@ -222,7 +243,6 @@ class BaseHandler(webapp2.RequestHandler):
             else:
                 self.username = user_settings.username
                 self.last_agreed_to_terms = user_settings.last_agreed_to_terms
-                self.values['user_email'] = user_settings.email
                 self.values['username'] = self.username
                 self.values['profile_picture_data_url'] = (
                     user_settings.profile_picture_data_url)
@@ -350,6 +370,7 @@ class BaseHandler(webapp2.RequestHandler):
             'OBJECT_EDITORS_JS': jinja2.utils.Markup(OBJECT_EDITORS_JS.value),
             'SIDEBAR_MENU_ADDITIONAL_LINKS': (
                 SIDEBAR_MENU_ADDITIONAL_LINKS.value),
+            'SOCIAL_MEDIA_BUTTONS': SOCIAL_MEDIA_BUTTONS.value,
         })
 
         if redirect_url_on_logout is None:
