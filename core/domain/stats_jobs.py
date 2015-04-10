@@ -339,3 +339,71 @@ class StatisticsMRJobManager(
         stats_models.ExplorationAnnotationsModel.create(
             exp_id, str(version), num_starts, num_completions,
             state_hit_counts)
+
+
+class StatisticsAudit(jobs.BaseMapReduceJobManager):
+	
+    @classmethod
+    def entity_classes_to_map_over(cls):
+        return [stats_models.ExplorationAnnotationsModel,
+                stats_models.StateCounterModel]
+
+    @staticmethod
+    def map(item):
+       if isinstance(item, stats_models.StateCounterModel):
+           if item.first_entry_count < 0:
+               yield ('State Counter ERROR',
+                   'Less than 0: ' + item.key + ' ' + item.first_entry_count)
+               return
+       yield (item.exploration_id, { 'version': item.version,
+                                     'starts': item.num_starts,
+                                     'comp': item.num_completions,
+                                     'state_hit': item.state_hit_counts})
+
+    @staticmethod
+    def reduce(key, stringified_values):
+        if key is 'State Counter ERROR':
+            for value_str in stringified_values:
+                yield (value_str,)
+            return
+        all_starts = 0
+        all_comps = 0
+        all_state_hit = {}
+        sum_starts = 0
+        sum_comps = 0
+        sum_state_hit = {}
+        for value_str in stringified_values:
+            value = ast.literal_eval(value_str)
+            if value['starts'] < 0:
+                yield ('starts is less than 0 exp_id:%s %s' % (key, value_str),)
+            if value['comp'] < 0:
+                yield ('comps is less than 0 exp_id:%s %s' % (key, value_str),)
+            if value['comp'] > value['starts']:
+                yield ('comps > starts exp_id:%s %s' % (key, value_str),)
+            if value['version'] == 'all':
+                all_starts = value['starts']
+                all_comps = value['comp']
+                for state_hit in value['state_hit']:
+                    count = value['state_hit'][state_hit]['first_entry_count']
+                    all_state_hit[state_hit] = count
+            else:
+                sum_starts += value['starts']
+                sum_comps += value['comp']
+                for state_hit in value['state_hit']:
+                    count = value['state_hit'][state_hit]['first_entry_count']
+                    if state_hit in sum_state_hit:
+                        sum_state_hit[state_hit] += count
+                    else:
+                        sum_state_hit[state_hit] = count
+                    
+        if sum_starts != all_starts:
+            yield ('sum of starts != all exp_id:%s sum: %s all: %s'
+                % (key, sum_starts, all_starts),)
+        if sum_comps != all_comps:
+            yield ('sum of comps != all exp_id:%s sum: %s all: %s'
+                % (key, sum_comps, all_comps),)
+        if all_state_hit != sum_state_hit:
+            yield ('sum of state hit != all exp_id:%s sum: %s all: %s'
+                % (key, sum_state_hit, all_state_hit),)
+
+
