@@ -377,11 +377,11 @@ class StatisticsAudit(jobs.BaseMapReduceJobManager):
         for value_str in stringified_values:
             value = ast.literal_eval(value_str)
             if value['starts'] < 0:
-                yield ('starts is less than 0 exp_id:%s %s' % (key, value_str),)
+                yield ('starts is less than 0 exp_id:%s version:%s starts:%s' % (key, value['version'], value['starts']),)
             if value['comp'] < 0:
-                yield ('comps is less than 0 exp_id:%s %s' % (key, value_str),)
+                yield ('comps is less than 0 exp_id:%s version:%s starts:%s' % (key, value['version'], value['comp']),)
             if value['comp'] > value['starts']:
-                yield ('comps > starts exp_id:%s %s' % (key, value_str),)
+                yield ('comps > starts exp_id:%s version:%s %s>%s' % (key, value['version'], value['comp'], value['starts']),)
             if value['version'] == 'all':
                 all_starts = value['starts']
                 all_comps = value['comp']
@@ -405,7 +405,9 @@ class StatisticsAudit(jobs.BaseMapReduceJobManager):
             yield ('sum of comps != all exp_id:%s sum: %s all: %s'
                 % (key, sum_comps, all_comps),)
         if all_state_hit != sum_state_hit:
-            yield ('sum of state hit != all exp_id:%s sum: %s all: %s'
-                % (key, sum_state_hit, all_state_hit),)
-
-
+            for state_hit in all_state_hit:
+                if state_hit not in sum_state_hit:
+                    if all_state_hit[state_hit] != 0:
+                        yield ('state in all that is not in sum exp_id:%s all:%s' % (key, all_state_hit[state_hit]),)
+                elif all_state_hit[state_hit] != sum_state_hit[state_hit]:
+                    yield ('state hit count not same exp_id: %s state: %s all: %s sum:%s' % (key, state_hit, all_state_hit[state_hit], sum_state_hit[state_hit]),)
