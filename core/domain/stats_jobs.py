@@ -353,8 +353,10 @@ class StatisticsAudit(jobs.BaseMapReduceJobManager):
        if isinstance(item, stats_models.StateCounterModel):
            if item.first_entry_count < 0:
                yield ('State Counter ERROR',
-                   'Less than 0: ' + item.key + ' ' + item.first_entry_count)
-               return
+                   'Less than 0: %s %d' % (item.key, item.first_entry_count))
+           return
+       if item.exploration_id is None:
+           return
        yield (item.exploration_id, { 'version': item.version,
                                      'starts': item.num_starts,
                                      'comp': item.num_completions,
@@ -362,7 +364,7 @@ class StatisticsAudit(jobs.BaseMapReduceJobManager):
 
     @staticmethod
     def reduce(key, stringified_values):
-        if key is 'State Counter ERROR':
+        if key == 'State Counter ERROR':
             for value_str in stringified_values:
                 yield (value_str,)
             return
