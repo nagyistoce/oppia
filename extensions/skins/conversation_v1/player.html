@@ -3,6 +3,16 @@
         href="/extensions/skins/conversation_v1/static/conversation.css">
 
   <div role="main" style="margin: 0 auto; position: relative;">
+
+    <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
+    <!-- TODO(anuzis): Relocate panels to proper positioning when functional. -->
+    <oppia-gadget-advice-bar title-with-value="&quot;Tips&quot;"></oppia-gadget-advice-bar>
+    <oppia-gadget-score-bar title-with-value="&quot;Friend Interest&quot;"></oppia-gadget-score-bar>
+    <oppia-gadget-panel panel-contents="panelsContents.left"></oppia-gadget-panel>
+    <oppia-gadget-panel panel-contents="panelsContents.right"></oppia-gadget-panel>
+    <oppia-gadget-panel panel-contents="panelsContents.bottom"></oppia-gadget-panel>
+    <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
+
     <div class="conversation-skin-cards-container">
       <md-card class="conversation-skin-exploration-intro-card">
         <img ng-src="<[introCardImageUrl]>">

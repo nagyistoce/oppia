@@ -19,6 +19,8 @@
  */
 
 // The conditioning on window.GLOBALS is because Karma does not appear to see GLOBALS.
+// @sll: Is this necessary? Resembles INTERACTION_SPECS pattern.
+oppia.constant('GADGET_SPECS', window.GLOBALS ? GLOBALS.GADGET_SPECS : {});
 oppia.constant('INTERACTION_SPECS', window.GLOBALS ? GLOBALS.INTERACTION_SPECS : {});
 
 // A simple service that provides stopwatch instances. Each stopwatch can be
@@ -203,6 +205,25 @@ oppia.factory('oppiaPlayerService', [
     return ($('<div>').append(el)).html();
   };
 
+  // TODO(anuzis): Make method DRY with interaction pattern service above.
+  var _getGadgetHtml = function(gadgetId, gadgetCustomizationArgSpecs) {
+    if (!gadgetId) {
+      return _NULL_GADGET_HTML;
+    }
+
+    var el = $(
+      '<oppia-gadget-' + $filter('camelCaseToHyphens')(gadgetId) + '>');
+
+    for (var caSpecName in gadgetCustomizationArgSpecs) {
+      var caSpecValue = gadgetCustomizationArgSpecs[caSpecName].value;
+      el.attr(
+        $filter('camelCaseToHyphens')(caSpecName) + '-with-value',
+        oppiaHtmlEscaper.objToEscapedJson(caSpecValue));
+    }
+
+    return ($('<div>').append(el)).html();
+  };
+
   var stopwatch = stopwatchProviderService.getInstance();
 
   var _onStateTransitionProcessed = function(
@@ -358,6 +379,25 @@ oppia.factory('oppiaPlayerService', [
     getCurrentStateName: function() {
       return _currentStateName;
     },
+
+    // EXPERIMENTAL: NOT FOR MERGER WITH ANY STABLE BRANCH.
+    // TODO(anuzis): refactor to support multiple gadgets; stateName limits visibility
+    // Return JS object with panel names as keys, lists of gadget HTML as values.
+    getGadgetHtml: function(stateName) {
+      return _getGadgetHtml(
+        _exploration.states[stateName]);
+    },
+    // EXPERIMENTAL: NOT FOR MERGER WITH ANY STABLE BRANCH.
+    // TODO(anuzis): Implement API necessary to support this workflow.
+    // For example:
+    // - getUniqueIDsOfGadgetsVisibleInEachPanel(stateName): returns JS object
+    //   with lists of unique Gadget ID vales for panel name keys.
+    // - getGadgetHtml(visibleGadgetsPerPanelMap): takes output of prior
+    //   method as input. (or accepts stateName and calls prior helper within
+    //   function.)
+    //
+    // EXPERIMENTAL: NOT FOR MERGER WITH ANY STABLE BRANCH.
+
     getInteractionHtml: function(stateName, labelForFocusTarget) {
       return _getInteractionHtml(
         _exploration.states[stateName].interaction.id,

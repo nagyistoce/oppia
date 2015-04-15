@@ -21,19 +21,19 @@ from extensions.gadgets import base
 import utils
 
 # AdviceBars hold 1 or more Advice Resources, which include a title and text.
-ADVICE_RESOURCE_SCHEMA = [
+ADVICE_OBJECT_SCHEMA = [
     {
-        'name': 'Advice Title',
+        'name': 'adviceTitle',
         'description': 'Link title displayed in the advice bar.',
         'schema': {
             'type': 'unicode',
         },
         'default_value': '',
     }, {
-        'name': 'Advice Text',
-        'description': 'Advice shown to learners on click.',
+        'name': 'adviceHtml',
+        'description': 'Advice shown to learners on click. (Accepts HTML)',
         'schema': {
-            'type': 'unicode',
+            'type': 'html',
         },
         'default_value': '',
     }
@@ -108,7 +108,8 @@ class AdviceBar(base.BaseGadget):
         """Returns int representing height in pixels.
 
         Args:
-        - customization_args: list of CustomizationArgSpec instances."""
+        - customization_args: list of CustomizationArgSpec instances.
+        """
         orientation = customization_args['orientation']['value']
         if orientation == self._VERTICAL_AXIS:
             return self._STACKABLE_AXIS_BASE_LENGTH + (

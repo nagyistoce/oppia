@@ -1611,10 +1611,27 @@ class Exploration(object):
             'title': self.title,
         }
 
+    def get_gadget_ids(self):
+        """Get all gadget ids used in this exploration."""
+        result = set()
+        for gadget_instances_list in (
+                self.skin_instance.panel_contents_dict.itervalues()):
+            result.update([
+                gadget_instance.id for gadget_instance
+                in gadget_instances_list])
+        #######################################################
+        # EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
+        # TODO(anuzis): Remove testing override.
+        if not result:
+            result = gadget_registry.Registry.get_all_gadget_ids()
+        return list(result)
+        # EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
+        #######################################################
+ 
     def get_interaction_ids(self):
         """Get all interaction ids used in this exploration."""
         return list(set([
-            state.interaction.id for state in self.states.values()]))
+            state.interaction.id for state in self.states.itervalues()]))
 
 
 class ExplorationSummary(object):

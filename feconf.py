@@ -92,6 +92,7 @@ ACCEPTED_IMAGE_FORMATS_AND_EXTENSIONS = {
 # Static file url to path mapping
 PATH_MAP = {
     '/css': os.path.join('core', 'templates', 'dev', 'head', 'css'),
+    '/extensions/gadgets': GADGETS_DIR,
     '/extensions/interactions': INTERACTIONS_DIR,
     '/extensions/rich_text_components': RTE_EXTENSIONS_DIR,
     '/favicon.ico': os.path.join('static', 'images', 'favicon.ico'),
