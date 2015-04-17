@@ -26,32 +26,20 @@ oppia.directive('oppiaGadgetAdviceBar', [
     return {
       restrict: 'E',
       templateUrl: 'gadget/AdviceBar',
-      controller: ['$scope', '$attrs', function ($scope, $attrs) {
+      controller: ['$scope', '$attrs', '$modal', function ($scope, $attrs, $modal) {
         // TODO(anuzis): Verify scope functions properly w.r.t. this instance.
         $scope.adviceBarTitle = oppiaHtmlEscaper.escapedJsonToObj($attrs.titleWithValue);
-        $scope.adviceBarResources = [
-        {
-          'title': 'Resource 1',
-          'html': 'test html',
-        }, {
-          'title': 'Resource 2',
-          'html': 'test html2',
-        }]
-        //$scope.adviceResources = oppiaHtmlEscaper.escapedJsonToObj($attrs.adviceResourcesWithValue);
+        $scope.adviceBarResources = oppiaHtmlEscaper.escapedJsonToObj($attrs.adviceObjectsWithValue);
+
+        // EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
+        $scope.overlayAdviceModal = function(adviceResourceIndex) {
+          $modal.open({
+            template: $scope.adviceBarResources[adviceResourceIndex].adviceHtml,
+            backdrop: true,
+            resolve: {},
+          })
+        };
       }],
-
-      // EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
-      //  // Array of advice objects with adviceTitle and adviceHtml keys.
-      //  this.adviceResources = $attrs.adviceObjectsWithValue;
-
-      //  this.overlayAdvice = function(adviceObjectIndex) {
-      //      // TODO(anuzis): Implement a means of overlaying associated HTML.
-      //      // Should AdviceBarResources be implemented as directives with
-      //      // their own htmlOverlay method?
-      //      var htmlOverlay = this.adviceResources[adviceObjectIndex]['adviceHtml']
-      //  }
-      // EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
-
-      }
     }
+  }
 ]);

@@ -205,12 +205,17 @@ oppia.factory('oppiaPlayerService', [
     return ($('<div>').append(el)).html();
   };
 
+  // Converts a gadget's panelContents to HTML for each directive.
+  var _getGadgetPanelHtml = function(panelContents) {
+    var resultHtml = '';
+    for (var i = 0; i < panelContents.length; i++) {
+      resultHtml += _getGadgetHtml(panelContents[i]['gadget_id'], panelContents[i]['customization_args']);
+    }
+    return resultHtml;
+  }
+
   // TODO(anuzis): Make method DRY with interaction pattern service above.
   var _getGadgetHtml = function(gadgetId, gadgetCustomizationArgSpecs) {
-    if (!gadgetId) {
-      return _NULL_GADGET_HTML;
-    }
-
     var el = $(
       '<oppia-gadget-' + $filter('camelCaseToHyphens')(gadgetId) + '>');
 
@@ -379,30 +384,19 @@ oppia.factory('oppiaPlayerService', [
     getCurrentStateName: function() {
       return _currentStateName;
     },
-
-    // EXPERIMENTAL: NOT FOR MERGER WITH ANY STABLE BRANCH.
-    // TODO(anuzis): refactor to support multiple gadgets; stateName limits visibility
-    // Return JS object with panel names as keys, lists of gadget HTML as values.
-    getGadgetHtml: function(stateName) {
-      return _getGadgetHtml(
-        _exploration.states[stateName]);
-    },
-    // EXPERIMENTAL: NOT FOR MERGER WITH ANY STABLE BRANCH.
-    // TODO(anuzis): Implement API necessary to support this workflow.
-    // For example:
-    // - getUniqueIDsOfGadgetsVisibleInEachPanel(stateName): returns JS object
-    //   with lists of unique Gadget ID vales for panel name keys.
-    // - getGadgetHtml(visibleGadgetsPerPanelMap): takes output of prior
-    //   method as input. (or accepts stateName and calls prior helper within
-    //   function.)
-    //
-    // EXPERIMENTAL: NOT FOR MERGER WITH ANY STABLE BRANCH.
-
     getInteractionHtml: function(stateName, labelForFocusTarget) {
       return _getInteractionHtml(
         _exploration.states[stateName].interaction.id,
         _exploration.states[stateName].interaction.customization_args,
         labelForFocusTarget);
+    },
+    getGadgetPanelsHtml: function() {
+      var result = {};
+      var panelContents = _exploration['skin_customizations']['panels_contents'];
+      for (var panelName in panelContents) {
+        result[panelName] = _getGadgetPanelHtml(panelContents[panelName]);
+      }
+      return result;
     },
     isInteractionInline: function(stateName) {
       var interactionId = _exploration.states[stateName].interaction.id;

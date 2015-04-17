@@ -6,11 +6,11 @@
 
     <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
     <!-- TODO(anuzis): Relocate panels to proper positioning when functional. -->
-    <oppia-gadget-advice-bar title-with-value="&quot;Tips&quot;"></oppia-gadget-advice-bar>
-    <oppia-gadget-score-bar title-with-value="&quot;Friend Interest&quot;"></oppia-gadget-score-bar>
     <oppia-gadget-panel panel-contents="panelsContents.left"></oppia-gadget-panel>
     <oppia-gadget-panel panel-contents="panelsContents.right"></oppia-gadget-panel>
     <oppia-gadget-panel panel-contents="panelsContents.bottom"></oppia-gadget-panel>
+    <div><div angular-html-bind="gadgetPanelsHtml.left"></div></div>
+    <div><div angular-html-bind="gadgetPanelsHtml.right"></div></div>
     <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
 
     <div class="conversation-skin-cards-container">
@@ -87,6 +87,9 @@
               </div>
             </div>
           </md-card>
+          <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
+          <div angular-html-bind="gadgetPanelsHtml.bottom">Bottom panel HTML</div>
+          <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
         </div>
       </div>
 
@@ -106,6 +109,10 @@
           </md-card>
         </div>
       </div>
+
+      <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
+      <div>Raw html: <[gadgetPanelsHtml]></div>
+      <!-- EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH. -->
 
       <div ng-if="finished && isLoggedIn && !isInPreviewMode" class="conversation-skin-final-ratings">
         <div style="margin-bottom: 20px;">Learned something new? How would you rate this exploration?</div>

@@ -666,8 +666,7 @@ class SkinInstance(object):
                 gadget_instance.validate()
 
     def to_dict(self):
-        """Returns SkinInstance data represented in dict form.
-        """
+        """Returns SkinInstance data represented in dict form."""
         return {
             'skin_id': self.skin_id,
             'skin_customizations': {
@@ -1604,6 +1603,8 @@ class Exploration(object):
             'init_state_name': self.init_state_name,
             'param_changes': self.param_change_dicts,
             'param_specs': self.param_specs_dict,
+            'skin_customizations': self.skin_instance.to_dict()[
+                'skin_customizations'],
             'states': {
                 state_name: state.to_dict()
                 for (state_name, state) in self.states.iteritems()

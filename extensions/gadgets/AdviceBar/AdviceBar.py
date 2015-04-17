@@ -54,14 +54,25 @@ class AdviceBar(base.BaseGadget):
                 'type': 'unicode',
             },
             'default_value': ''
+        }, {
+            'name': 'adviceObjects',
+            'description': 'Whether to stack tips horizontally or vertically.',
+            'schema': {
+                'type': ADVICE_OBJECT_SCHEMA,
+            },
+            'default_value': []
+        }, {
+            'name': 'orientation',
+            'description': 'Whether to extend tips horizontally or vertically.',
+            'schema': {
+                'type': 'unicode',
+            },
+            'default_value': 'vertical'
         }
     ]
 
     # Maximum number of tip resources that an AdviceBar can hold.
     _MAX_TIP_COUNT = 3
-
-    # TODO(anuzis): position image for delivery.
-    _ADVICE_ICON_FILENAME = 'AdviceBarTipIcon.png'
 
     # Constants for calculation of height and width.
     _FIXED_AXIS_BASE_LENGTH = 100
@@ -75,7 +86,7 @@ class AdviceBar(base.BaseGadget):
 
     def validate(self, customization_args):
         """Ensure AdviceBar retains reasonable config."""
-        tip_count = len(customization_args['advice_objects']['value'])
+        tip_count = len(customization_args['adviceObjects']['value'])
         if tip_count > self._MAX_TIP_COUNT:
             raise utils.ValidationError(
                 'AdviceBars are limited to %d tips, found %d.' % (
@@ -98,7 +109,7 @@ class AdviceBar(base.BaseGadget):
         if orientation == self._HORIZONTAL_AXIS:
             return self._STACKABLE_AXIS_BASE_LENGTH + (
                 self._LENGTH_PER_ADVICE_RESOURCE * len(
-                    customization_args['advice_objects']['value']))
+                    customization_args['adviceObjects']['value']))
         elif orientation == self._VERTICAL_AXIS:
             return self._FIXED_AXIS_BASE_LENGTH
         else:
@@ -114,7 +125,7 @@ class AdviceBar(base.BaseGadget):
         if orientation == self._VERTICAL_AXIS:
             return self._STACKABLE_AXIS_BASE_LENGTH + (
                 self._LENGTH_PER_ADVICE_RESOURCE * len(
-                    customization_args['advice_objects']['value']))
+                    customization_args['adviceObjects']['value']))
         elif orientation == self._HORIZONTAL_AXIS:
             return self._FIXED_AXIS_BASE_LENGTH
         else:

@@ -42,6 +42,13 @@ class ScoreBar(base.BaseGadget):
                 'type': 'int',
             },
             'default_value': 0
+        }, {
+            'name': 'paramName',
+            'description': "The parameter name this score bar follows.",
+            'schema': {
+                'type': 'unicode',
+            },
+            'default_value': ''
         }
     ]
 
