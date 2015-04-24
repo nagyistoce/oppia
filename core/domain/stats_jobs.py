@@ -408,6 +408,6 @@ class StatisticsAudit(jobs.BaseMapReduceJobManager):
             for state_hit in all_state_hit:
                 if state_hit not in sum_state_hit:
                     if all_state_hit[state_hit] != 0:
-                        yield ('state in all that is not in sum exp_id:%s all:%s' % (key, all_state_hit[state_hit]),)
+                        yield ('state in all that is not in sum exp_id:%s state_name:%s, all:%s' % (key, state_hit, all_state_hit[state_hit]),)
                 elif all_state_hit[state_hit] != sum_state_hit[state_hit]:
                     yield ('state hit count not same exp_id: %s state: %s all: %s sum:%s' % (key, state_hit, all_state_hit[state_hit], sum_state_hit[state_hit]),)
