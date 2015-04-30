@@ -19,6 +19,8 @@
  */
 
 // The conditioning on window.GLOBALS is because Karma does not appear to see GLOBALS.
+// @sll: Is this necessary? Resembles INTERACTION_SPECS pattern.
+oppia.constant('GADGET_SPECS', window.GLOBALS ? GLOBALS.GADGET_SPECS : {});
 oppia.constant('INTERACTION_SPECS', window.GLOBALS ? GLOBALS.INTERACTION_SPECS : {});
 
 // A simple service that provides stopwatch instances. Each stopwatch can be
@@ -203,6 +205,30 @@ oppia.factory('oppiaPlayerService', [
     return ($('<div>').append(el)).html();
   };
 
+  // Converts a gadget's panelContents to HTML for each directive.
+  var _getGadgetPanelHtml = function(panelContents) {
+    var resultHtml = '';
+    for (var i = 0; i < panelContents.length; i++) {
+      resultHtml += _getGadgetHtml(panelContents[i]['gadget_id'], panelContents[i]['customization_args']);
+    }
+    return resultHtml;
+  }
+
+  // TODO(anuzis): Make method DRY with interaction pattern service above.
+  var _getGadgetHtml = function(gadgetId, gadgetCustomizationArgSpecs) {
+    var el = $(
+      '<oppia-gadget-' + $filter('camelCaseToHyphens')(gadgetId) + '>');
+
+    for (var caSpecName in gadgetCustomizationArgSpecs) {
+      var caSpecValue = gadgetCustomizationArgSpecs[caSpecName].value;
+      el.attr(
+        $filter('camelCaseToHyphens')(caSpecName) + '-with-value',
+        oppiaHtmlEscaper.objToEscapedJson(caSpecValue));
+    }
+
+    return ($('<div>').append(el)).html();
+  };
+
   var stopwatch = stopwatchProviderService.getInstance();
 
   var _onStateTransitionProcessed = function(
@@ -363,6 +389,14 @@ oppia.factory('oppiaPlayerService', [
         _exploration.states[stateName].interaction.id,
         _exploration.states[stateName].interaction.customization_args,
         labelForFocusTarget);
+    },
+    getGadgetPanelsHtml: function() {
+      var result = {};
+      var panelContents = _exploration['skin_customizations']['panels_contents'];
+      for (var panelName in panelContents) {
+        result[panelName] = _getGadgetPanelHtml(panelContents[panelName]);
+      }
+      return result;
     },
     isInteractionInline: function(stateName) {
       var interactionId = _exploration.states[stateName].interaction.id;

@@ -8,6 +8,7 @@
   {{ super() }}
   {% if exploration_version %}
     <script type="text/javascript">
+      GLOBALS.GADGET_SPECS = JSON.parse('{{GADGET_SPECS|js_string}}');
       GLOBALS.INTERACTION_SPECS = JSON.parse('{{INTERACTION_SPECS|js_string}}');
       GLOBALS.explorationVersion = JSON.parse('{{exploration_version|js_string}}');
     </script>
@@ -140,6 +141,10 @@
     </div>
   </script>
 
+  <script type="text/ng-template" id="components/gadget_panel">
+    {% include 'components/gadget_panel.html' %}
+  </script>
+
   {% include 'components/exploration_embed_button.html' %}
   {% include 'components/ratings.html' %}
 {% endblock %}
@@ -156,4 +161,5 @@
 
   {{ skin_templates }}
   {{ interaction_templates }}
+  {{ gadget_templates }}
 {% endblock footer_js %}

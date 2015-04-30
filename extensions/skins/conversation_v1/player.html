@@ -3,6 +3,7 @@
         href="/extensions/skins/conversation_v1/static/conversation.css">
 
   <div role="main" style="margin: 0 auto; position: relative;">
+
     <div class="conversation-skin-cards-container">
       <md-card class="conversation-skin-exploration-intro-card">
         <img ng-src="<[introCardImageUrl]>">
@@ -12,6 +13,9 @@
       </md-card>
 
       <div class="conversation-skin-iframe-container">
+        <!-- EXPERIMENTAL: LEFT CSS LOCATION. @amitdeutsch, any suggestions here? It would be nice to position this closer to the card, but unsure best way to tweak existing CSS. Tried adding display:inline-block to each card CSS class and it made the cards pop to the left with the left gadget panel on their right. -->
+        <oppia-gadget-panel panel-html="gadgetPanelsHtml.left" class="conversation-skin-left-gadget-panel"></oppia-gadget-panel>
+        <!-- EXPERIMENTAL CSS LOCATION. NOT FOR MERGER INTO ANY STABLE BRANCH. -->
         <div ng-repeat="state in allResponseStates track by $index"
              ng-class="{'conversation-skin-last-log-entry': $last}">
           <md-card class="conversation-skin-card">
@@ -77,7 +81,14 @@
               </div>
             </div>
           </md-card>
+          <!-- EXPERIMENTAL: RIGHT CSS LOCATION. @amitdeutsch, I tried inserting this panel code in every div above this point. It sometimes floats within the card, but never to its right! Any suggestions? -->
+          <oppia-gadget-panel panel-html="gadgetPanelsHtml.right" class="conversation-skin-right-gadget-panel"></oppia-gadget-panel>
+          <!-- EXPERIMENTAL CSS LOCATION. NOT FOR MERGER INTO ANY STABLE BRANCH. -->
+
         </div>
+        <!-- EXPERIMENTAL: LEFT CSS LOCATION. @amitdeutsch, this appears to work perfectly for the bottom panel. One div up and the panel repeats for each card. This renders once and always floats below the most recent card. -->
+        <oppia-gadget-panel panel-html="gadgetPanelsHtml.bottom"></oppia-gadget-panel>
+        <!-- EXPERIMENTAL CSS LOCATION. NOT FOR MERGER INTO ANY STABLE BRANCH. -->
       </div>
 
       <div ng-if="waitingForNewCard">

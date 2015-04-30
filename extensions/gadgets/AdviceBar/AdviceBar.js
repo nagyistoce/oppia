@@ -15,13 +15,31 @@
 /**
  * Directive for the AdviceBar gadget.
  *
+ * IMPORTANT NOTE: The naming convention for customization args that are passed
+ * into the directive is: the name of the parameter, followed by 'With',
+ * followed by the name of the arg.
  */
+
+// EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
 oppia.directive('oppiaGadgetAdviceBar', [
   'oppiaHtmlEscaper', function(oppiaHtmlEscaper) {
     return {
       restrict: 'E',
-      scope: {},
       templateUrl: 'gadget/AdviceBar',
+      controller: ['$scope', '$attrs', '$modal', function ($scope, $attrs, $modal) {
+        // TODO(anuzis): Verify scope functions properly w.r.t. this instance.
+        $scope.adviceBarTitle = oppiaHtmlEscaper.escapedJsonToObj($attrs.titleWithValue);
+        $scope.adviceBarResources = oppiaHtmlEscaper.escapedJsonToObj($attrs.adviceObjectsWithValue);
+
+        // EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
+        $scope.overlayAdviceModal = function(adviceResourceIndex) {
+          $modal.open({
+            template: '<h1>' + $scope.adviceBarResources[adviceResourceIndex].adviceTitle + '</h1>' + $scope.adviceBarResources[adviceResourceIndex].adviceHtml,
+            backdrop: true,
+            resolve: {},
+          })
+        };
+      }],
     }
   }
 ]);

@@ -92,6 +92,7 @@ ACCEPTED_IMAGE_FORMATS_AND_EXTENSIONS = {
 # Static file url to path mapping
 PATH_MAP = {
     '/css': os.path.join('core', 'templates', 'dev', 'head', 'css'),
+    '/extensions/gadgets': GADGETS_DIR,
     '/extensions/interactions': INTERACTIONS_DIR,
     '/extensions/rich_text_components': RTE_EXTENSIONS_DIR,
     '/favicon.ico': os.path.join('static', 'images', 'favicon.ico'),
@@ -244,6 +245,8 @@ DEMO_EXPLORATIONS = [
     ('protractor_test_1.yaml', 'Protractor Test', 'Mathematics'),
     ('solar_system', 'The Solar System', 'Physics'),
     ('about_oppia.yaml', 'About Oppia', 'Welcome'),
+    ('about_oppia_w_gadgets.yaml', 'Welcome with Gadgets! (DEV ONLY)',
+     'Welcome with Gadgets (DEV ONLY)'),
 ]
 
 # TODO(sll): Add all other URLs here.

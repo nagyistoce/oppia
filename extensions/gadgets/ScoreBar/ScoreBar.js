@@ -15,13 +15,27 @@
 /**
  * Directive for the ScoreBar gadget.
  *
+ * IMPORTANT NOTE: The naming convention for customization args that are passed
+ * into the directive is: the name of the parameter, followed by 'With',
+ * followed by the name of the arg.
  */
+
 oppia.directive('oppiaGadgetScoreBar', [
-  'oppiaHtmlEscaper', function(oppiaHtmlEscaper) {
+  'oppiaHtmlEscaper', 'learnerParamsService', function(oppiaHtmlEscaper, learnerParamsService) {
     return {
       restrict: 'E',
-      scope: {},
       templateUrl: 'gadget/ScoreBar',
+      controller: ['$scope', '$attrs', function ($scope, $attrs) {
+
+        $scope.max = 200;
+        
+        $scope.scoreBarTitle = oppiaHtmlEscaper.escapedJsonToObj($attrs.titleWithValue);
+
+        $scope.getScoreValue = function() {
+          return learnerParamsService.getValue('guess');
+        }
+        $scope.fillValueStyle = {'width': $scope.scoreValue + 'px;'};
+      }],
     }
   }
 ]);
