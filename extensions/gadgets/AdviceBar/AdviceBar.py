@@ -46,6 +46,15 @@ class AdviceBar(base.BaseGadget):
     description = 'Allows learners to receive advice from predefined tips.'
     _dependency_ids = []
 
+    # @sll: All tests pass but one assert schema[SCHEMA_KEY_TYPE] in
+    # schema_utils_test.ALLOWED_SCHEMA_TYPES, which triggers for the schema
+    # type: ADVICE_OBJECT_SCHEMA below.
+    #
+    # I thought I saw another extension with a custom schema type before,
+    # but don't see it anymore. Any suggestions on the best way to resolve?
+    # Adding a 'custom' schema type doesn't seem like the best pattern, but
+    # is it appropriate in a case like this?
+
     _customization_arg_specs = [
         {
             'name': 'title',
@@ -56,7 +65,7 @@ class AdviceBar(base.BaseGadget):
             'default_value': ''
         }, {
             'name': 'adviceObjects',
-            'description': 'Whether to stack tips horizontally or vertically.',
+            'description': 'Title and content for each tip.',
             'schema': {
                 'type': ADVICE_OBJECT_SCHEMA,
             },

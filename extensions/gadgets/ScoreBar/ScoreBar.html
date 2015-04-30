@@ -2,8 +2,8 @@
 
 <script type="text/ng-template" id="gadget/ScoreBar">
   
-  <div class="gauge" ng-click="testIncrementScoreValue()">
+  <div class="gauge">
     <div class="title"><[scoreBarTitle]></div>
-    <progressbar class="fill" max="max" value="scoreValue"><span style="color:black; white-space:nowrap;"></span></progressbar>
+    <progressbar class="fill" max="max" value="getScoreValue()"><span style="color:black; white-space:nowrap;"></span></progressbar>
   </div>
 </script>

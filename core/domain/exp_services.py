@@ -601,7 +601,7 @@ def _save_exploration(
     exploration_model.author_notes = exploration.author_notes
     exploration_model.default_skin = exploration.default_skin
     exploration_model.skin_customizations = (
-        exploration.skin_instance.panel_contents_dict)
+        exploration.skin_instance.to_dict()['skin_customizations'])
 
     exploration_model.init_state_name = exploration.init_state_name
     exploration_model.states = {

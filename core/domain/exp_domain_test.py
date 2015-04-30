@@ -798,6 +798,7 @@ class ConversionUnitTests(test_utils.GenericTestBase):
             },
             'param_changes': [],
             'param_specs': {},
+            'skin_customizations': feconf.DEFAULT_SKIN_CUSTOMIZATIONS,
         })
 
 

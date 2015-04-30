@@ -4,8 +4,15 @@ default_skin: conversation_v1
 init_state_name: First State
 language_code: en
 objective: Learn about the world's first community-built personal online tutor
-param_changes: []
-param_specs: {}
+param_changes:
+- customization_args:
+    parse_with_jinja: true
+    value: '120'
+  generator_id: Copier
+  name: guess
+param_specs:
+  guess:
+    obj_type: UnicodeString
 schema_version: 5
 skill_tags: []
 skin_customizations:
@@ -26,7 +33,22 @@ skin_customizations:
       visible_in_states:
       - About this website
       - Contribute
-    right: []
+    right:
+    - customization_args:
+        adviceObjects:
+          value:
+          - adviceHtml: This tip should be on the right.
+            adviceTitle: Right Tip 1!
+          - adviceHtml: This tip should be on the right.
+            adviceTitle: Right Tip 2!
+        title:
+          value: "Right Tips"
+        orientation:
+          value: vertical
+      gadget_id: AdviceBar
+      visible_in_states:
+      - About this website
+      - Contribute
     bottom:
     - customization_args:
         paramName:
@@ -487,4 +509,9 @@ states:
           - '...'
           param_changes: []
       id: MultipleChoiceInput
-    param_changes: []
+    param_changes:
+    - customization_args:
+        parse_with_jinja: true
+        value: '{{guess + 70}}'
+      generator_id: Copier
+      name: guess

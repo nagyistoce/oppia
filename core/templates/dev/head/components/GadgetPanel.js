@@ -18,22 +18,12 @@
  * @author anuzis@google.com (Michael Anuzis)
  */
 
-// EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
-// TODO(anuzis): Implement.
-
-oppia.directive('gadgetPanel', ['$filter', function($filter) {
+oppia.directive('oppiaGadgetPanel', ['$filter', function($filter) {
   return {
     restrict: 'E',
-    scope: {},
-    templateUrl: '',
-    controller: ['$scope', '$element', '$timeout', function($scope, $element, $timeout) {
-
-    // JS object whose keys are panel names, values are lists of HTML strings
-    // e.g. "<oppia-gadget-advice-bar title-with-value="..." default-icon-with-value="..."></oppia-gadget-advice-bar>"
-    var panelContentsHtml = {};     // TODO(anuzis): Implement.
-
-    }]
+    scope: {
+        panelHtml: '&',
+    },
+    templateUrl: 'components/gadget_panel'
   };
 }]);
-
-// EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.

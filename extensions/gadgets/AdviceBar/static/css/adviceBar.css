@@ -1,13 +1,9 @@
 .oppia-advice-bar-container {
-  display: inline-block;
-  position: relative;
   width: 140px;
   height: 100%;
-  box-sizing: border-box;
   padding: 50px 25px 0;
   vertical-align: top;
   text-align: center;
-  box-shadow: 1px 0 lightgray;
 }
 
 .oppia-advice-bar-title {

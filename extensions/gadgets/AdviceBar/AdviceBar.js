@@ -34,7 +34,7 @@ oppia.directive('oppiaGadgetAdviceBar', [
         // EXPERIMENTAL: NOT FOR MERGER INTO ANY STABLE BRANCH.
         $scope.overlayAdviceModal = function(adviceResourceIndex) {
           $modal.open({
-            template: $scope.adviceBarResources[adviceResourceIndex].adviceHtml,
+            template: '<h1>' + $scope.adviceBarResources[adviceResourceIndex].adviceTitle + '</h1>' + $scope.adviceBarResources[adviceResourceIndex].adviceHtml,
             backdrop: true,
             resolve: {},
           })

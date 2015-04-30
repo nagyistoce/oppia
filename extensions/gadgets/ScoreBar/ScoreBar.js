@@ -31,19 +31,10 @@ oppia.directive('oppiaGadgetScoreBar', [
         
         $scope.scoreBarTitle = oppiaHtmlEscaper.escapedJsonToObj($attrs.titleWithValue);
 
-        $scope.scoreValue = oppiaHtmlEscaper.escapedJsonToObj($attrs.initialValueWithValue);
+        $scope.getScoreValue = function() {
+          return learnerParamsService.getValue('guess');
+        }
         $scope.fillValueStyle = {'width': $scope.scoreValue + 'px;'};
-
-
-
-
-        // Prior working:
-        //     <div class="fill" style="width: 103px;"></div>
-
-        $scope.testIncrementScoreValue = function() {
-          $scope.scoreValue += 20;
-        };
-
       }],
     }
   }
