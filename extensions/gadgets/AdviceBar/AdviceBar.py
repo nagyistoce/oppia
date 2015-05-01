@@ -51,31 +51,22 @@ class AdviceBar(base.BaseGadget):
             'name': 'adviceObjects',
             'description': 'Title and content for each tip.',
             'schema': {
-                # @sll: This functions in FE, but fails
-                # schema_utils_test._validate_dict_keys with
-                # AssertionError: Extra Keys {'default_value': '', 'schema':
-                # {'type': 'unicode'}, 'name': 'adviceTitle',
-                # 'description': 'Title for the tip.'}
                 'type': 'list',
                 'items': {
                     'type': 'dict',
-                    'properties': [
-                        {
-                            'name': 'adviceTitle',
-                            'description': 'Title for the tip.',
-                            'schema': {
-                                'type': 'unicode',
-                            },
-                            'default_value': '',
-                        }, {
-                            'name': 'adviceHtml',
-                            'description': 'Advice shown on click. (HTML)',
-                            'schema': {
-                                'type': 'html',
-                            },
-                            'default_value': '',
-                        }
-                    ]
+                    'properties': [{
+                        'name': 'adviceTitle',
+                        'description': 'Title for the tip.',
+                        'schema': {
+                            'type': 'unicode',
+                        },
+                    }, {
+                        'name': 'adviceHtml',
+                        'description': 'Advice shown on click. (HTML)',
+                        'schema': {
+                            'type': 'html',
+                        },
+                    }]
                 }
             },
             'default_value': []
@@ -114,7 +105,7 @@ class AdviceBar(base.BaseGadget):
                     tip_count))
         elif tip_count < self._MIN_TIP_COUNT:
             raise utils.ValidationError(
-                'AdviceBar require at least %d tips, found %s.' % (
+                'AdviceBar requires at least %d tips, found %s.' % (
                     self._MIN_TIP_COUNT,
                     tip_count))
 

@@ -149,6 +149,7 @@
 {% block footer_js %}
   {{ super() }}
   <script>
+    {{ include_js_file('components/gadgetPanel.js') }}
     {{ include_js_file('components/explorationEmbedButton.js') }}
     {{ include_js_file('player/PlayerServices.js') }}
     {{ include_js_file('player/StateTransitionService.js') }}
