@@ -18,12 +18,12 @@
  * @author anuzis@google.com (Michael Anuzis)
  */
 
-oppia.directive('oppiaGadgetPanel', ['$filter', function($filter) {
+oppia.directive('oppiaGadgetPanel', function() {
   return {
     restrict: 'E',
     scope: {
-        panelHtml: '&',
+      panelHtml: '&',
     },
-    templateUrl: 'components/gadget_panel'
+    templateUrl: 'components/gadgetPanel'
   };
-}]);
+});

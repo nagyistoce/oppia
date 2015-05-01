@@ -245,8 +245,14 @@ DEMO_EXPLORATIONS = [
     ('protractor_test_1.yaml', 'Protractor Test', 'Mathematics'),
     ('solar_system', 'The Solar System', 'Physics'),
     ('about_oppia.yaml', 'About Oppia', 'Welcome'),
+    #######################################################
+    # EXPERIMENTAL: NOT FOR MERGER TO ANY STABLE BRANCH.
+    # TODO(anuzis): Replace DEV ONLY demo with an actual exploration that
+    # illustrates gadgets in action.
     ('about_oppia_w_gadgets.yaml', 'Welcome with Gadgets! (DEV ONLY)',
-     'Welcome with Gadgets (DEV ONLY)'),
+     'Welcome'),
+    # EXPERIMENTAL: NOT FOR MERGER TO ANY STABLE BRANCH.
+    #######################################################
 ]
 
 # TODO(sll): Add all other URLs here.

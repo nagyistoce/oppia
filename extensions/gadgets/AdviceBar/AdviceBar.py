@@ -20,24 +20,6 @@ __author__ = 'Michael Anuzis'
 from extensions.gadgets import base
 import utils
 
-# AdviceBars hold 1 or more Advice Resources, which include a title and text.
-ADVICE_OBJECT_SCHEMA = [
-    {
-        'name': 'adviceTitle',
-        'description': 'Link title displayed in the advice bar.',
-        'schema': {
-            'type': 'unicode',
-        },
-        'default_value': '',
-    }, {
-        'name': 'adviceHtml',
-        'description': 'Advice shown to learners on click. (Accepts HTML)',
-        'schema': {
-            'type': 'html',
-        },
-        'default_value': '',
-    }
-]
 
 class AdviceBar(base.BaseGadget):
     """Base gadget for providing an AdviceBar."""
@@ -64,10 +46,37 @@ class AdviceBar(base.BaseGadget):
             },
             'default_value': ''
         }, {
+            # AdviceBars hold 1 or more adviceObjects, which include a title
+            # and text.
             'name': 'adviceObjects',
             'description': 'Title and content for each tip.',
             'schema': {
-                'type': ADVICE_OBJECT_SCHEMA,
+                # @sll: This functions in FE, but fails
+                # schema_utils_test._validate_dict_keys with
+                # AssertionError: Extra Keys {'default_value': '', 'schema':
+                # {'type': 'unicode'}, 'name': 'adviceTitle',
+                # 'description': 'Title for the tip.'}
+                'type': 'list',
+                'items': {
+                    'type': 'dict',
+                    'properties': [
+                        {
+                            'name': 'adviceTitle',
+                            'description': 'Title for the tip.',
+                            'schema': {
+                                'type': 'unicode',
+                            },
+                            'default_value': '',
+                        }, {
+                            'name': 'adviceHtml',
+                            'description': 'Advice shown on click. (HTML)',
+                            'schema': {
+                                'type': 'html',
+                            },
+                            'default_value': '',
+                        }
+                    ]
+                }
             },
             'default_value': []
         }, {
@@ -75,13 +84,15 @@ class AdviceBar(base.BaseGadget):
             'description': 'Whether to extend tips horizontally or vertically.',
             'schema': {
                 'type': 'unicode',
+                'choices': ['horizontal', 'vertical']
             },
             'default_value': 'vertical'
         }
     ]
 
-    # Maximum number of tip resources that an AdviceBar can hold.
+    # Maximum and minimum number of tips that an AdviceBar can hold.
     _MAX_TIP_COUNT = 3
+    _MIN_TIP_COUNT = 1
 
     # Constants for calculation of height and width.
     _FIXED_AXIS_BASE_LENGTH = 100
@@ -100,6 +111,11 @@ class AdviceBar(base.BaseGadget):
             raise utils.ValidationError(
                 'AdviceBars are limited to %d tips, found %d.' % (
                     self._MAX_TIP_COUNT,
+                    tip_count))
+        elif tip_count < self._MIN_TIP_COUNT:
+            raise utils.ValidationError(
+                'AdviceBar require at least %d tips, found %s.' % (
+                    self._MIN_TIP_COUNT,
                     tip_count))
 
     def _stackable_length_for_instance(self, advice_bar_instance):

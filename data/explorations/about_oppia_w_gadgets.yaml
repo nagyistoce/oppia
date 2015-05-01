@@ -7,7 +7,7 @@ objective: Learn about the world's first community-built personal online tutor
 param_changes:
 - customization_args:
     parse_with_jinja: true
-    value: '120'
+    value: '35'
   generator_id: Copier
   name: guess
 param_specs:
@@ -52,9 +52,9 @@ skin_customizations:
     bottom:
     - customization_args:
         paramName:
-          value: testParam
-        initialValue:
-          value: 20
+          value: guess
+        maxValue:
+          value: 100
         title:
           value: Current Score
       gadget_id: ScoreBar
@@ -512,6 +512,6 @@ states:
     param_changes:
     - customization_args:
         parse_with_jinja: true
-        value: '{{guess + 70}}'
+        value: '{{guess + 50}}'
       generator_id: Copier
       name: guess

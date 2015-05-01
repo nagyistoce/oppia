@@ -27,14 +27,13 @@ oppia.directive('oppiaGadgetScoreBar', [
       templateUrl: 'gadget/ScoreBar',
       controller: ['$scope', '$attrs', function ($scope, $attrs) {
 
-        $scope.max = 200;
-        
+        $scope.maxValue = oppiaHtmlEscaper.escapedJsonToObj($attrs.maxValueWithValue);
         $scope.scoreBarTitle = oppiaHtmlEscaper.escapedJsonToObj($attrs.titleWithValue);
+        $scope.scoreBarParamName = oppiaHtmlEscaper.escapedJsonToObj($attrs.paramNameWithValue);
 
         $scope.getScoreValue = function() {
-          return learnerParamsService.getValue('guess');
+          return learnerParamsService.getValue($scope.scoreBarParamName);
         }
-        $scope.fillValueStyle = {'width': $scope.scoreValue + 'px;'};
       }],
     }
   }

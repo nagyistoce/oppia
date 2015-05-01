@@ -36,15 +36,16 @@ class ScoreBar(base.BaseGadget):
             },
             'default_value': 'Score'
         }, {
-            'name': 'initialValue',
-            'description': "The score bar's initial value",
+            'name': 'maxValue',
+            'description': 'Maximum value (bar fills as a % of this value)',
             'schema': {
                 'type': 'int',
             },
-            'default_value': 0
+            'default_value': 100
         }, {
+            # TODO(anuzis): Validate that paramName is a valid in Exploration.
             'name': 'paramName',
-            'description': "The parameter name this score bar follows.",
+            'description': 'The parameter name this score bar follows.',
             'schema': {
                 'type': 'unicode',
             },
