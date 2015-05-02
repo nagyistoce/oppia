@@ -213,6 +213,9 @@ ALLOWED_GADGETS = {
     'AdviceBar': {
         'dir': os.path.join(GADGETS_DIR, 'AdviceBar')
     },
+    'PencilCode': {
+        'dir': os.path.join(GADGETS_DIR, 'PencilCode')
+    },
     'ScoreBar': {
         'dir': os.path.join(GADGETS_DIR, 'ScoreBar')
     },
@@ -253,6 +256,7 @@ DEMO_EXPLORATIONS = [
      'Welcome'),
     # EXPERIMENTAL: NOT FOR MERGER TO ANY STABLE BRANCH.
     #######################################################
+    ('pencilcode.yaml', 'Pencil Code Test', 'Programming'),
 ]
 
 # TODO(sll): Add all other URLs here.
