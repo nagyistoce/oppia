@@ -785,12 +785,13 @@ oppia.config(['$provide', function($provide) {
       'taRegisterTool', '$delegate', '$modal', '$filter', 'oppiaHtmlEscaper', 'RTE_COMPONENT_SPECS',
       function(taRegisterTool, taOptions, $modal, $filter, oppiaHtmlEscaper, RTE_COMPONENT_SPECS) {
 
-		taOptions.disableSanitizer = true;
+    taOptions.disableSanitizer = true;
+    taOptions.classes.textEditor = 'form-control oppia-rte-content';
     taOptions.toolbar = [
-      ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
-      ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
-      ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
-      ['html', 'insertImage','insertLink', 'insertVideo']
+      ['bold', 'italics', 'underline'],
+      ['ol', 'ul'],
+      ['insertLink', 'insertImage'],
+      []
     ];
 
     var _RICH_TEXT_COMPONENTS = [];
@@ -825,7 +826,7 @@ oppia.config(['$provide', function($provide) {
           var textAngular = this;
           textAngular.$editor().wrapSelection('insertHtml', '<span class="insertionPoint"></span>')
           $modal.open({
-            templateUrl: 'modals/customizeRteComponent',  
+            templateUrl: 'modals/customizeRteComponent',
             backdrop: 'static',
             resolve: {
               customizationArgSpecs: function() {
@@ -892,7 +893,7 @@ oppia.directive('textAngularRte', ['taApplyCustomRenderers', '$filter', 'oppiaHt
       htmlContent: '=',
     },
     template: '<div text-angular="" ng-model="tempContent">',
-    controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs){
+    controller: ['$scope', '$element', '$attrs', '$log', function($scope, $element, $attrs, $log) {
       var _RICH_TEXT_COMPONENTS = [];
       var componentIds = Object.keys(RTE_COMPONENT_SPECS);
       componentIds.sort().forEach(function(componentId) {
@@ -1617,10 +1618,10 @@ oppia.directive('schemaBasedListEditor', [
           $scope.isAddItemButtonPresent = false;
         };
 
-        
+
         $scope._onChildFormSubmit = function(evt) {
           if (!$scope.isAddItemButtonPresent) {
-            /** 
+            /**
              * If form submission happens on last element of the set (i.e the add item button is absent)
              * then automatically add the element to the list.
              */
@@ -1629,7 +1630,7 @@ oppia.directive('schemaBasedListEditor', [
               $scope.addElement();
             }
           } else {
-            /** 
+            /**
              * If form submission happens on existing element remove focus from it
              */
              document.activeElement.blur();
