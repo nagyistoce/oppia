@@ -782,9 +782,8 @@ oppia.directive('richTextEditor', [
 // Add RTE extensions to textAngular toolbar options.
 oppia.config(['$provide', function($provide) {
   $provide.decorator('taOptions', [
-      'taRegisterTool', '$delegate', '$modal', '$filter', 'oppiaHtmlEscaper',
-      'RTE_COMPONENT_SPECS', '$compile',
-      function(taRegisterTool, taOptions, $modal, $filter, oppiaHtmlEscaper, RTE_COMPONENT_SPECS, $compile) {
+      'taRegisterTool', '$delegate', '$modal', '$filter', 'oppiaHtmlEscaper', 'RTE_COMPONENT_SPECS',
+      function(taRegisterTool, taOptions, $modal, $filter, oppiaHtmlEscaper, RTE_COMPONENT_SPECS) {
 
     taOptions.toolbar = [
       ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
@@ -794,59 +793,6 @@ oppia.config(['$provide', function($provide) {
     ];
 
     var _RICH_TEXT_COMPONENTS = [];
-
-    //https://github.com/fraywing/textAngular/issues/51
-    var insertNodeAtCursor = function(node) {
-      var sel, range, html;
-      if (window.getSelection) {
-        sel = window.getSelection();
-        if (sel.getRangeAt && sel.rangeCount) {
-          sel.getRangeAt(0).insertNode(node);
-        }
-      } else if (document.selection && document.selection.createRange) {
-        range = document.selection.createRange();
-        html = (node.nodeType == 3) ? node.data : node.outerHTML;
-        range.pasteHTML(html);
-      }
-    }
-
-    function placeCaretAtEnd(el) {
-      el.focus();
-      if (typeof window.getSelection != "undefined"
-      && typeof document.createRange != "undefined") {
-        var range = document.createRange();
-        range.setStartAfter( el );
-        range.setEndAfter( el );
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      } else if (typeof document.body.createTextRange != "undefined") {
-        var textRange = document.body.createTextRange();
-        textRange.moveToElementText(el);
-        textRange.collapse(false);
-        textRange.select();
-      }
-    }
-
-    // Replace <img> tags with <oppia-noninteractive> tags.
-    var convertRteToHtml = function(rte) {
-      var elt = $('<div>' + rte + '</div>');
-
-      _RICH_TEXT_COMPONENTS.forEach(function(componentDefn) {
-        elt.find('img.oppia-noninteractive-' + componentDefn.name).replaceWith(function() {
-          var jQueryElt = $('<' + this.className + '/>');
-          for (var i = 0; i < this.attributes.length; i++) {
-            var attr = this.attributes[i];
-            if (attr.name !== 'class' && attr.name !== 'src') {
-              jQueryElt.attr(attr.name, attr.value);
-            }
-          }
-          return jQueryElt.get(0);
-        });
-      });
-
-      return elt.html();
-    };
 
     var createRteElement = function(componentDefn, customizationArgsDict) {
       var el = $('<img/>');
@@ -876,6 +822,7 @@ oppia.config(['$provide', function($provide) {
         buttontext: componentDefn.name,
         action: function() {
           var textAngular = this;
+          textAngular.$editor().wrapSelection('insertHtml', '<span class="insertionPoint"></span>')
           $modal.open({
             templateUrl: 'modals/customizeRteComponent',  
             backdrop: 'static',
@@ -889,6 +836,7 @@ oppia.config(['$provide', function($provide) {
               var attrsCustomizationArgsDict = {};
 
               $scope.customizationArgSpecs = customizationArgSpecs;
+              console.log($scope.customizationArgSpecs);
 
               $scope.tmpCustomizationArgs = [];
               for (var i = 0; i < customizationArgSpecs.length; i++) {
@@ -919,11 +867,11 @@ oppia.config(['$provide', function($provide) {
               };
             }]
           }).result.then(function(customizationArgsDict) {
-            var imgEl = createRteElement(componentDefn, customizationArgsDict);
-            var el = $compile(convertRteToHtml(imgEl.outerHTML))(textAngular.$parent);
-            textAngular.$editor().displayElements.text[0].focus();
-            insertNodeAtCursor(el[0]);
-            placeCaretAtEnd(el[0]);
+            var el = createRteElement(componentDefn, customizationArgsDict);
+            var insertionPoint = textAngular.$editor().displayElements.text[0].querySelector('.insertionPoint');
+            var parent = insertionPoint.parentNode;
+            parent.replaceChild(el, insertionPoint);
+            textAngular.$editor().updateTaBindtaTextElement();
           });
         }
       });
@@ -944,6 +892,83 @@ oppia.directive('textAngularRte', ['taApplyCustomRenderers', '$filter', 'oppiaHt
     },
     template: '<div text-angular="" ng-model="tempContent">',
     controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs){
+      var _RICH_TEXT_COMPONENTS = [];
+      var componentIds = Object.keys(RTE_COMPONENT_SPECS);
+      componentIds.sort().forEach(function(componentId) {
+        RTE_COMPONENT_SPECS[componentId].backendName = RTE_COMPONENT_SPECS[componentId].backend_name;
+        RTE_COMPONENT_SPECS[componentId].name = RTE_COMPONENT_SPECS[componentId].frontend_name;
+        RTE_COMPONENT_SPECS[componentId].iconDataUrl = RTE_COMPONENT_SPECS[componentId].icon_data_url;
+        _RICH_TEXT_COMPONENTS.push(RTE_COMPONENT_SPECS[componentId]);
+      });
+
+      // Creates a dict.
+      var createCustomizationArgDictFromAttrs = function(attrs) {
+        var customizationArgsDict = {};
+        for (var i = 0; i < attrs.length; i++) {
+          var attr = attrs[i];
+          if (attr.name == 'class' || attr.name == 'src') {
+            continue;
+          }
+          var separatorLocation = attr.name.indexOf('-with-value');
+          if (separatorLocation === -1) {
+            $log.error('RTE Error: invalid customization attribute ' + attr.name);
+            continue;
+          }
+          var argName = attr.name.substring(0, separatorLocation);
+          customizationArgsDict[argName] = oppiaHtmlEscaper.escapedJsonToObj(attr.value);
+        }
+        return customizationArgsDict;
+      };
+
+      // Replace <oppia-noninteractive> tags with <img> tags.
+      var convertHtmlToRte = function(html) {
+        var elt = $('<div>' + html + '</div>');
+
+        _RICH_TEXT_COMPONENTS.forEach(function(componentDefn) {
+          elt.find('oppia-noninteractive-' + componentDefn.name).replaceWith(function() {
+            return createRteElement(
+            componentDefn, createCustomizationArgDictFromAttrs(this.attributes));
+          });
+        });
+
+        return elt.html();
+      };
+
+      var createRteElement = function(componentDefn, customizationArgsDict) {
+        var el = $('<img/>');
+        el.attr('src', componentDefn.iconDataUrl);
+        el.addClass('oppia-noninteractive-' + componentDefn.name);
+
+        for (var attrName in customizationArgsDict) {
+          el.attr(
+          $filter('camelCaseToHyphens')(attrName) + '-with-value',
+          oppiaHtmlEscaper.objToEscapedJson(customizationArgsDict[attrName]));
+        }
+
+        var domNode = el.get(0);
+        return domNode;
+      };
+
+      // Replace <img> tags with <oppia-noninteractive> tags.
+      var convertRteToHtml = function(rte) {
+        var elt = $('<div>' + rte + '</div>');
+
+        _RICH_TEXT_COMPONENTS.forEach(function(componentDefn) {
+          elt.find('img.oppia-noninteractive-' + componentDefn.name).replaceWith(function() {
+            var jQueryElt = $('<' + this.className + '/>');
+            for (var i = 0; i < this.attributes.length; i++) {
+              var attr = this.attributes[i];
+              if (attr.name !== 'class' && attr.name !== 'src') {
+                jQueryElt.attr(attr.name, attr.value);
+              }
+            }
+            return jQueryElt.get(0);
+          });
+        });
+
+        return elt.html();
+      };
+
       var replaceWithPlaceholder = function(raw){
         var converted;
         var openingTag = /<iframe/g;
@@ -956,13 +981,13 @@ oppia.directive('textAngularRte', ['taApplyCustomRenderers', '$filter', 'oppiaHt
       };
 
       $scope.init = function(){
-        $scope.tempContent = replaceWithPlaceholder($scope.htmlContent);
+        $scope.tempContent = convertHtmlToRte(replaceWithPlaceholder($scope.htmlContent));
       };
 
       $scope.init();
 
       $scope.$watch(function(){return $scope.tempContent}, function(newVal, oldVal){
-        $scope.htmlContent = taApplyCustomRenderers(newVal);
+        $scope.htmlContent = convertRteToHtml(taApplyCustomRenderers(newVal));
       });
     }],
   };
