@@ -790,7 +790,6 @@ oppia.config(['$provide', function($provide) {
     taOptions.toolbar = [
       ['bold', 'italics', 'underline'],
       ['ol', 'ul'],
-      ['insertLink', 'insertImage'],
       []
     ];
 
@@ -811,6 +810,24 @@ oppia.config(['$provide', function($provide) {
       return domNode;
     };
 
+    var createCustomizationArgDictFromAttrs = function(attrs) {
+      var customizationArgsDict = {};
+      for (var i = 0; i < attrs.length; i++) {
+        var attr = attrs[i];
+        if (attr.name == 'class' || attr.name == 'src') {
+          continue;
+        }
+        var separatorLocation = attr.name.indexOf('-with-value');
+        if (separatorLocation === -1) {
+          $log.error('RTE Error: invalid customization attribute ' + attr.name);
+          continue;
+        }
+        var argName = attr.name.substring(0, separatorLocation);
+        customizationArgsDict[argName] = oppiaHtmlEscaper.escapedJsonToObj(attr.value);
+      }
+      return customizationArgsDict;
+    };
+
     var componentIds = Object.keys(RTE_COMPONENT_SPECS);
     componentIds.sort().forEach(function(componentId) {
       RTE_COMPONENT_SPECS[componentId].backendName = RTE_COMPONENT_SPECS[componentId].backend_name;
@@ -820,8 +837,72 @@ oppia.config(['$provide', function($provide) {
     });
 
     _RICH_TEXT_COMPONENTS.forEach(function(componentDefn) {
+      var buttonDisplay = createRteElement(componentDefn, {});
+      var onlyWithAttrs = 'oppia-noninteractive-' + componentDefn.frontend_name;
       taRegisterTool(componentDefn.name, {
-        buttontext: componentDefn.name,
+        display: buttonDisplay.outerHTML,
+        onElementSelect: {
+          element: 'img',
+          filter: function(elt) {
+            return elt.hasClass('oppia-noninteractive-' + componentDefn.frontend_name);
+          },
+          action: function(event, $element, editorScope) {
+            event.preventDefault();
+
+            var textAngular = this;
+
+            $modal.open({
+              templateUrl: 'modals/customizeRteComponent',
+              backdrop: 'static',
+              resolve: {
+                customizationArgSpecs: function() {
+                  return componentDefn.customization_arg_specs;
+                }
+              },
+              controller: ['$scope', '$modalInstance', 'customizationArgSpecs',
+                           function($scope, $modalInstance, customizationArgSpecs) {
+                var attrsCustomizationArgsDict = createCustomizationArgDictFromAttrs(
+                  $element[0].attributes);
+
+                $scope.customizationArgSpecs = customizationArgSpecs;
+
+                $scope.tmpCustomizationArgs = [];
+                for (var i = 0; i < customizationArgSpecs.length; i++) {
+                  var caName = customizationArgSpecs[i].name;
+                  $scope.tmpCustomizationArgs.push({
+                    name: caName,
+                    value: (
+                      attrsCustomizationArgsDict.hasOwnProperty(caName) ?
+                      attrsCustomizationArgsDict[caName] :
+                      customizationArgSpecs[i].default_value)
+                  });
+                }
+
+                $scope.cancel = function() {
+                  $modalInstance.dismiss('cancel');
+                };
+
+                $scope.save = function(customizationArgs) {
+                  $scope.$broadcast('externalSave');
+
+                  var customizationArgsDict = {};
+                  for (var i = 0; i < $scope.tmpCustomizationArgs.length; i++) {
+                    var caName = $scope.tmpCustomizationArgs[i].name;
+                    customizationArgsDict[caName] = $scope.tmpCustomizationArgs[i].value;
+                  }
+
+                  $modalInstance.close(customizationArgsDict);
+                };
+              }]
+            }).result.then(function(customizationArgsDict) {
+              var el = createRteElement(componentDefn, customizationArgsDict);
+              $element[0].parentNode.replaceChild(el, $element[0]);
+              textAngular.$editor().updateTaBindtaTextElement();
+            });
+
+            return false;
+          }
+        },
         action: function() {
           var textAngular = this;
           textAngular.$editor().wrapSelection('insertHtml', '<span class="insertionPoint"></span>')
@@ -838,7 +919,6 @@ oppia.config(['$provide', function($provide) {
               var attrsCustomizationArgsDict = {};
 
               $scope.customizationArgSpecs = customizationArgSpecs;
-              console.log($scope.customizationArgSpecs);
 
               $scope.tmpCustomizationArgs = [];
               for (var i = 0; i < customizationArgSpecs.length; i++) {
@@ -878,7 +958,7 @@ oppia.config(['$provide', function($provide) {
         }
       });
 
-      taOptions.toolbar[3].push(componentDefn.name);
+      taOptions.toolbar[2].push(componentDefn.name);
     });
 
     return taOptions;
