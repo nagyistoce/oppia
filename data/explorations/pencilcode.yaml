@@ -20,225 +20,157 @@ skin_customizations:
     main:
     - customization_args:
         initialCode:
-          value: "speed 5\ndot yellow, 160\nfd 20\nrt 90\nfd 25\ndot black, 20\nbk 50\ndot black, 20\nbk 5\nrt 90\nfd 40\npen black, 7\nlt 30\nlt 120, 35"
+          value: 'speed 5
+
+            dot yellow, 160
+
+            fd 20
+
+            rt 90
+
+            fd 25
+
+            dot black, 20
+
+            bk 50
+
+            dot black, 20
+
+            bk 5
+
+            rt 90
+
+            fd 40
+
+            pen black, 7
+
+            lt 30
+
+            lt 120, 35'
       gadget_id: PencilCode
       visible_in_states:
       - About this website
       - Contribute
 states:
-  About this website:
+  Before Fall:
     content:
     - type: text
-      value: "<div>Oppia.org is a hosted version of the Oppia codebase:\_</div><div><oppia-noninteractive-link\
-        \ open_link_in_same_window-with-value=\"false\" url-with-value=\"&amp;quot;https://code.google.com/p/oppia/&amp;quot;\"\
-        ></oppia-noninteractive-link></div><div><br></div><div>This site is maintained\
-        \ by a group of volunteers in their spare time. If you want to help, let us\
-        \ know! You can email the site admins at admin@oppia.org.</div><div><br></div><div>Much\
-        \ of the code powering this site is written by Google engineers. However,\
-        \ oppia.org is not a Google product, and Google bears no responsibility for\
-        \ the content of this website.</div>"
+      value: '<div><span style="font-size: 1em;">Your instructions may look different
+        from someone else''s but even if they are incomplete, I bet with some refinement
+        we could get this turtle bouncing in no time! How fast is the turtle moving
+        the moment before it starts to fall?</span><br></div>'
     interaction:
-      customization_args:
-        choices:
-          value:
-          - Who created this site?
-          - How can I contact the creators of Oppia?
-          - Can I use the content on this site?
-          - I want to go back to my earlier questions.
+      customization_args: {}
       handlers:
       - name: submit
         rule_specs:
         - definition:
             inputs:
-              x: 1
+              x: 0.0
             name: Equals
             rule_type: atomic
             subject: answer
-          dest: Contact
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 0
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Credits
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 2
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Site License
-          feedback: []
+          dest: Bounce unrealistically
+          feedback:
+          - Yes, that's right our turtle should have an initial velocity, that's its
+            speed and direction of zero.
           param_changes: []
         - definition:
             rule_type: default
-          dest: About this website
+          dest: Bounce unrealistically
           feedback:
-          - '...'
+          - Before it begins to fall, it should not be moving at all so lets give
+            it an initial velocity of zero.
           param_changes: []
-      id: MultipleChoiceInput
+      id: NumericInput
     param_changes: []
-  Contact:
+  Bounce unrealistically:
     content:
     - type: text
-      value: <div>If you have a question relating to this site, you can get in touch
-        by posting to our forum:</div><div><oppia-noninteractive-link open_link_in_same_window-with-value="false"
-        url-with-value="&amp;quot;https://www.oppia.org/forum&amp;quot;"></oppia-noninteractive-link><br></div><div><br></div><div>You
-        can also follow our blog to get the latest updates:</div><div><oppia-noninteractive-link
-        open_link_in_same_window-with-value="false" url-with-value="&amp;quot;http://oppiablog.blogspot.com/&amp;quot;"></oppia-noninteractive-link><br></div><div><br></div><div>If
-        you find a bug or have a feature request, please create an issue on the Oppia
-        bug tracker:</div><div><oppia-noninteractive-link open_link_in_same_window-with-value="false"
-        url-with-value="&amp;quot;https://code.google.com/p/oppia/issues/list&amp;quot;"></oppia-noninteractive-link><br></div><div><br></div><div>You
-        can also get in touch with the developers of the open-source Oppia codebase
-        via the developers' forum:</div><div><oppia-noninteractive-link open_link_in_same_window-with-value="false"
-        url-with-value="&amp;quot;https://groups.google.com/forum/#!forum/oppia-dev&amp;quot;"></oppia-noninteractive-link><br></div><div><br></div><div>If
-        you need to contact the admins privately, you can email them at admin@oppia.org.</div>
+      value: '<div><span style="font-size: 1em;">Our code may have grown a bit, but
+        perhaps you will see some similarities to your own set of instructions. If
+        you are familiar with the physics equations that describe a falling, you may
+        be surprised to see them here but simulations are intended to mimic reality
+        and we can use our equations in an environment like this. What is even better,
+        is we can modify the equations as we see fit to experiment (if you have ever
+        tried to modify gravity you''ll appreciate how useful a simulation can be).</span><br></div><div><br></div><div>We
+        set up our environment at the top of our code, some of these will stay <b>constant</b>
+        throughout the program like acceleration (see line ____) while others may
+        <b>vary</b> like our velocity in the vertical direction, which we refer to
+        as vy (see line ____). Once our simulation is running, 100 times per second,
+        the turtle will move down until it reaches the bottom of the window (the floor),
+        then it will safely bounce back up to the top where it started. Which line
+        do you think changes the direction of the turtle when it reaches the bottom
+        of the window?</div><div><br></div>'
     interaction:
-      customization_args:
-        choices:
-          value:
-          - So who created this site?
-          - Can I use the content on this site?
-          - I want to go back to my earlier questions.
+      customization_args: {}
       handlers:
       - name: submit
         rule_specs:
         - definition:
             inputs:
-              x: 2
+              x: 0.0
             name: Equals
             rule_type: atomic
             subject: answer
-          dest: So what can I tell you
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 0
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Credits
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 1
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Site License
-          feedback: []
+          dest: Final State
+          feedback:
+          - Yes, when our turtle reaches the bottom of the window we want to change
+            it's direction so we multiply its velocity by -1 to change it from a negative
+            velocity (in this example, downward) to positive (upwards).
           param_changes: []
         - definition:
             rule_type: default
-          dest: Contact
+          dest: Bounce unrealistically
           feedback:
-          - '...'
+          - If you recall, velocity is speed and direction. If our turtle is moving
+            downward with a velocity that is negative, then which line of the code
+            will reverse that direction and make it positive?" then repeat the question.
           param_changes: []
-      id: MultipleChoiceInput
+      id: NumericInput
     param_changes: []
-  Contribute:
+  Direction:
     content:
     - type: text
-      value: Great question! I'm completely built and owned by the community, so without
-        your contributions I wouldn't exist!<div><br></div><div>First, you can contribute
-        by being an active member of the Oppia community. This includes posting on
-        our forum, giving feedback to the site, and giving feedback to exploration
-        authors. You can take a look at our Community Guidelines here:</div><div><oppia-noninteractive-link
-        url-with-value="&amp;quot;https://www.oppia.org/info#community&amp;quot;"
-        text-with-value="&amp;quot;&amp;quot;" open_link_in_same_window-with-value="false"></oppia-noninteractive-link><br></div><div><br></div><div>Second,
-        you can contribute by creating content. This includes creating and publishing
-        explorations. Making explorations is fun and easy, you can try it for yourself
-        by going back to my home page and clicking 'Create Exploration'. You can take
-        a look at the Publishing Criteria here:</div><div><span class=""></span><oppia-noninteractive-link
-        url-with-value="&amp;quot;https://www.oppia.org/info#publish-criteria&amp;quot;"
-        text-with-value="&amp;quot;&amp;quot;" open_link_in_same_window-with-value="false"></oppia-noninteractive-link><br></div><div><br></div><div>Finally,
-        you can contribute directly to the open source platform. We are always in
-        need of designers, programmers, marketers, and everyone in-between. Visit
-        the code site to find out more about how you can contribute:</div><div><oppia-noninteractive-link
-        url-with-value="&amp;quot;https://code.google.com/p/oppia&amp;quot;" text-with-value="&amp;quot;&amp;quot;"
-        open_link_in_same_window-with-value="false"></oppia-noninteractive-link><br></div>
+      value: The code above checks 100 times per second for where the mouse is and
+        turns the turtle to that direction. Press play and move your mouse cursor
+        around the turtle to watch it turn to whichever direction your cursor is pointing.
+        <b>When you're ready to get this turtle moving, click next.</b>
     interaction:
       customization_args:
         buttonText:
-          value: Continue
+          value: Next
       handlers:
       - name: submit
         rule_specs:
         - definition:
             rule_type: default
-          dest: So what can I tell you
+          dest: Velocity
           feedback: []
           param_changes: []
       id: Continue
     param_changes: []
-  Credits:
+  Final State:
     content:
     - type: text
-      value: <div>The open-source codebase has been contributed to by many people.
-        You can see a full list of contributors on our Credits page:</div><div><oppia-noninteractive-link
-        url-with-value="&amp;quot;https://www.oppia.org/info#credits&amp;quot;" text-with-value="&amp;quot;&amp;quot;"
-        open_link_in_same_window-with-value="false"></oppia-noninteractive-link><br></div><div><br></div><div>We
-        have lots of plans for the future! If you'd like to help, you'd be very welcome,
-        and we'd be delighted to help you get started. Feel free to reach out to us
-        at the oppia-dev Google Group, or by contacting admin@oppia.org.</div>
-    interaction:
-      customization_args:
-        choices:
-          value:
-          - How can I contact the creators of Oppia?
-          - Can I use the site content?
-          - I want to go back to my earlier questions.
-      handlers:
-      - name: submit
-        rule_specs:
-        - definition:
-            inputs:
-              x: 0
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Contact
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 2
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: So what can I tell you
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 1
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Site License
-          feedback: []
-          param_changes: []
-        - definition:
-            rule_type: default
-          dest: Credits
-          feedback:
-          - '...'
-          param_changes: []
-      id: MultipleChoiceInput
-    param_changes: []
-  End Card:
-    content:
-    - type: text
-      value: Fantastic. Feel free to try one of my featured explorations below. Then
-        I hope you'll feel inspired to create a few explorations yourself.&nbsp;<div><br></div><div>Have
-        fun!</div>
+      value: <div>Our turtle is having a wonderful time and is literally jumping for
+        joy. Wheee! Feel free to play with the various numbers and the code itself.
+        Try changing the color of the pen to help you follow what the turtle is doing,
+        and use the log window at the bottom to follow the changing values of the
+        variables. If you want to challenge yourself you could get the turtle to bounce
+        up and down in a certain direction like this image below.</div><div><br></div><div>[IMAGE]</div><div><div><br></div><div>And,
+        while you're at it, why not get the turtle to lose a little bit of its energy
+        with each bounce like a ball or anything else might when it is bouncing like
+        the image below?</div></div><div><br></div><div>[IMAGE]</div><div><br></div><div><div>There
+        are a bunch of ways you could accomplish this and to help you get started
+        try searching for the term [coefficient of restitution].</div><div><br></div><div>For
+        more information and examples of these types of simulations check out PhET,
+        the Matter and Interactions textbook.</div><div><br></div><div>This activity
+        is aligned to the following &nbsp;skills, standards, etc.</div><div><br></div><div>If
+        you would like to see how algorithms apply to computer science, the humanities,
+        mathematics, or the sciences click here, otherwise continue to the next section
+        to explore more ways to use algorithms to enhance what you are already doing
+        in your classroom.</div></div>
     interaction:
       customization_args:
         buttonText:
@@ -253,220 +185,76 @@ states:
           param_changes: []
       id: Continue
     param_changes: []
-  Example1:
-    content:
-    - type: text
-      value: <div>Great question! To demonstrate, can I ask your name?</div>
-    interaction:
-      customization_args:
-        placeholder:
-          value: Type your answer here.
-        rows:
-          value: 1
-      handlers:
-      - name: submit
-        rule_specs:
-        - definition:
-            rule_type: default
-          dest: Example2
-          feedback: []
-          param_changes: []
-      id: TextInput
-    param_changes: []
-  Example2:
-    content:
-    - type: text
-      value: "<div>Guess what {{answer}}, you\u2019ve been playing one of my explorations\
-        \ all along!&nbsp;</div><div><br></div><div>Explorations are like interactive\
-        \ lessons. There are many types of interactions you can have in an exploration;\
-        \ for example, let's try using a map.</div><div><br></div><div>Can you find\
-        \ Helsinki, Finland on the map?</div>"
-    interaction:
-      customization_args:
-        latitude:
-          value: 0
-        longitude:
-          value: 0
-        zoom:
-          value: 0
-      handlers:
-      - name: submit
-        rule_specs:
-        - definition:
-            inputs:
-              d: 0
-              p:
-              - 0.0
-              - 0.0
-            name: Within
-            rule_type: atomic
-            subject: answer
-          dest: Example3
-          feedback:
-          - Great job, you found it!
-          param_changes: []
-        - definition:
-            rule_type: default
-          dest: Example3
-          feedback:
-          - Well, not quite, but close enough!
-          param_changes: []
-      id: InteractiveMap
-    param_changes: []
-  Example3:
-    content:
-    - type: text
-      value: "<div>You can easily share explorations with others using the share icon\
-        \ at the top. You can click on the discussion icon to give feedback and report\
-        \ issues with a conversation. Remember, this is a community project\u2014\
-        \ your participation is welcome and needed!</div><div><br></div><div>Creating\
-        \ conversations is fun and easy. You try it for yourself by clicking 'Create\
-        \ Exploration' on my home page.</div>"
-    interaction:
-      customization_args:
-        buttonText:
-          value: Continue
-      handlers:
-      - name: submit
-        rule_specs:
-        - definition:
-            rule_type: default
-          dest: So what can I tell you
-          feedback: []
-          param_changes: []
-      id: Continue
-    param_changes: []
   First State:
     content:
     - type: text
-      value: "<div>Hi there, I\u2019m Oppia! Let\u2019s code with Pencil Code.</div>"
+      value: <div>Physics is being applied in all sorts of new applications when today's
+        scientists, engineers, animators, and many others develop models and simulations
+        to make predictions and emulate the real world. We can teach the turtle to
+        move and even bounce once we provide it with the right set of instructions
+        which is also known as an algorithm.</div>
     interaction:
       customization_args:
         buttonText:
-          value: Continue
+          value: Next
       handlers:
       - name: submit
         rule_specs:
         - definition:
             rule_type: default
-          dest: So what can I tell you
+          dest: Direction
           feedback: []
           param_changes: []
       id: Continue
     param_changes: []
-  Site License:
+  Reflection on Bouncing:
     content:
     - type: text
-      value: Yes, all the content on this website can be used freely under the Creative
-        Commons 2.0 License. You can learn more about the License here:<div><oppia-noninteractive-link
-        url-with-value="&amp;quot;https://www.oppia.org/info#license&amp;quot;" text-with-value="&amp;quot;&amp;quot;"
-        open_link_in_same_window-with-value="false"></oppia-noninteractive-link><br></div>
+      value: '<div><span style="font-size: 1em;">Let''s teach the turtle to bounce.,
+        dDon''t worry, it won''t get hurt.! Take a moment to write out the list of
+        instructions you would use to explain to a young child what happens to a ball
+        every second it is falling. There''s no need to include equations and if you
+        would prefer, go ahead and draw a picture explaining what is happening every
+        second as a ball is falling. Feel free to use your own words but try to make
+        it as specific as possible and break it into steps. </span><b style="font-size:
+        1em;">When you have the best list of instructions you can come up with, click
+        next.</b><br></div>'
     interaction:
       customization_args:
-        choices:
-          value:
-          - So who created this site?
-          - How can I contact the creators of Oppia?
-          - I want to go back to my earlier questions.
+        buttonText:
+          value: Next
       handlers:
       - name: submit
         rule_specs:
         - definition:
-            inputs:
-              x: 0
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Credits
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 1
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Contact
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 2
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: So what can I tell you
-          feedback: []
-          param_changes: []
-        - definition:
             rule_type: default
-          dest: Site License
-          feedback:
-          - '...'
+          dest: Before Fall
+          feedback: []
           param_changes: []
-      id: MultipleChoiceInput
+      id: Continue
     param_changes: []
-  So what can I tell you:
+  Velocity:
     content:
     - type: text
-      value: So, what else can I tell you about myself?
+      value: '<div><span style="font-size: 1em;">Now we have set our turtle''s distance
+        to 1 (see line ____) and added to the set of instructions that repeat 100
+        times every second to move the turtle forward (see fd on line ____) by that
+        distance. So as time passes, the turtle moves a certain distance over time
+        in a particular direction which we call the turtle''s velocity. Press the
+        play button and move your mouse as before, but now watch as the turtle follows
+        you around. We''ve attached a pen to the turtle''s belly so you can see the
+        path it took. Click next when you''re ready to move on.</span><br></div><div><br></div>'
     interaction:
       customization_args:
-        choices:
-          value:
-          - How do your explorations work?
-          - What can you tell me about this website?
-          - How can I contribute to Oppia?
-          - Those were all the questions I had!
+        buttonText:
+          value: Next
       handlers:
       - name: submit
         rule_specs:
         - definition:
-            inputs:
-              x: 1
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: About this website
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 3
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: End Card
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 0
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Example1
-          feedback: []
-          param_changes: []
-        - definition:
-            inputs:
-              x: 2
-            name: Equals
-            rule_type: atomic
-            subject: answer
-          dest: Contribute
-          feedback: []
-          param_changes: []
-        - definition:
             rule_type: default
-          dest: So what can I tell you
-          feedback:
-          - '...'
+          dest: Reflection on Bouncing
+          feedback: []
           param_changes: []
-      id: MultipleChoiceInput
-    param_changes:
-    - customization_args:
-        parse_with_jinja: true
-        value: '{{guess + 50}}'
-      generator_id: Copier
-      name: guess
+      id: Continue
+    param_changes: []
