@@ -7,58 +7,33 @@ objective: PencilCode embedding
 param_changes:
 - customization_args:
     parse_with_jinja: true
-    value: '35'
+    value: ''
   generator_id: Copier
-  name: guess
+  name: PencilCode0initialCode
 param_specs:
-  guess:
+  PencilCode0initialCode:
     obj_type: UnicodeString
 schema_version: 5
 skill_tags: []
 skin_customizations:
   panels_contents:
     main:
-    - customization_args:
-        initialCode:
-          value: 'speed 5
-
-            dot yellow, 160
-
-            fd 20
-
-            rt 90
-
-            fd 25
-
-            dot black, 20
-
-            bk 50
-
-            dot black, 20
-
-            bk 5
-
-            rt 90
-
-            fd 40
-
-            pen black, 7
-
-            lt 30
-
-            lt 120, 35'
+    - customization_args: {}
       gadget_id: PencilCode
       visible_in_states:
-      - About this website
-      - Contribute
+      - First State
+      - Direction
+      - Direction Question
+      - Velocity
+      - Bounce unrealistically
 states:
   Before Fall:
     content:
     - type: text
-      value: '<div><span style="font-size: 1em;">Your instructions may look different
-        from someone else''s but even if they are incomplete, I bet with some refinement
-        we could get this turtle bouncing in no time! How fast is the turtle moving
-        the moment before it starts to fall?</span><br></div>'
+      value: <div><span>Your instructions may look different from someone else's.
+        But even if they are incomplete, I bet with some refinement we could get this
+        turtle bouncing in no time!</span></div><div><span><br></span></div><div><span>How
+        fast is the turtle moving the moment before it starts to fall?</span><br></div>
     interaction:
       customization_args: {}
       handlers:
@@ -72,14 +47,14 @@ states:
             subject: answer
           dest: Bounce unrealistically
           feedback:
-          - Yes, that's right our turtle should have an initial velocity, that's its
-            speed and direction of zero.
+          - Yes, that's right. Our turtle should have an initial velocity (i.e.,
+            speed and direction) of zero.
           param_changes: []
         - definition:
             rule_type: default
           dest: Bounce unrealistically
           feedback:
-          - Before it begins to fall, it should not be moving at all so lets give
+          - Actually, before it begins to fall, it should not be moving at all. So, let's give
             it an initial velocity of zero.
           param_changes: []
       id: NumericInput
@@ -87,21 +62,26 @@ states:
   Bounce unrealistically:
     content:
     - type: text
-      value: '<div><span style="font-size: 1em;">Our code may have grown a bit, but
-        perhaps you will see some similarities to your own set of instructions. If
-        you are familiar with the physics equations that describe a falling, you may
-        be surprised to see them here but simulations are intended to mimic reality
-        and we can use our equations in an environment like this. What is even better,
-        is we can modify the equations as we see fit to experiment (if you have ever
-        tried to modify gravity you''ll appreciate how useful a simulation can be).</span><br></div><div><br></div><div>We
-        set up our environment at the top of our code, some of these will stay <b>constant</b>
-        throughout the program like acceleration (see line ____) while others may
-        <b>vary</b> like our velocity in the vertical direction, which we refer to
-        as vy (see line ____). Once our simulation is running, 100 times per second,
-        the turtle will move down until it reaches the bottom of the window (the floor),
-        then it will safely bounce back up to the top where it started. Which line
-        do you think changes the direction of the turtle when it reaches the bottom
-        of the window?</div><div><br></div>'
+      value: '<div><span>Our code has now grown a bit, but perhaps you will see some
+        similarities to your own set of instructions.</span></div><div><span><br></span></div><div><span>If
+        you''re familiar with the physics equations that describe a fall, you may
+        be surprised to see them here. However, simulations are intended to mimic
+        reality, and we can use our equations in an environment like this. Even better,
+        we can do experiments easily by modifying the equations (if you have ever
+        tried to modify gravity you''ll appreciate how useful a simulation can be).</span><br></div><div><span><br></span></div><div><span>W</span><span
+        style="font-size: 1em;">e start by setting up our environment at the top of
+        our code. Some of these, like acceleration, will stay </span><b style="font-size:
+        1em;">constant</b><span style="font-size: 1em;"> throughout the program (see
+        line 6). Others may </span><b style="font-size: 1em;">vary</b><span style="font-size:
+        1em;">,</span><span style="font-size: 1em;"> like our velocity in the vertical
+        direction, which we refer to as vy (see line 4).</span></div><div><span style="font-size:
+        1em;"><br></span></div><div><span style="font-size: 1em;">Once our simulation
+        is running at a rate of 100 times per second, the turtle will move down until
+        it reaches the bottom of the window (the floor), then it will safely bounce
+        back up to the top where it started.</span></div><div><span style="font-size:
+        1em;"><br></span></div><div><span style="font-size: 1em;"><b>Question:&nbsp;</b>Which
+        line do you think changes the direction of the turtle when it reaches the
+        bottom of the window?</span></div>'
     interaction:
       customization_args: {}
       handlers:
@@ -109,7 +89,7 @@ states:
         rule_specs:
         - definition:
             inputs:
-              x: 0.0
+              x: 12.0
             name: Equals
             rule_type: atomic
             subject: answer
@@ -123,19 +103,27 @@ states:
             rule_type: default
           dest: Bounce unrealistically
           feedback:
-          - If you recall, velocity is speed and direction. If our turtle is moving
-            downward with a velocity that is negative, then which line of the code
-            will reverse that direction and make it positive?" then repeat the question.
+          - "Recall that velocity is speed and direction. If our turtle is moving\
+            \ downward, it will have a negative velocity.\_<span>Which line of code\
+            \ will reverse that direction and make it positive?</span>"
           param_changes: []
       id: NumericInput
-    param_changes: []
+    param_changes:
+    - customization_args:
+        parse_with_jinja: true
+        value: "speed Infinity\npen purple\nvx = 0.2\nvy = 0\ndt = 0.01 #Way to improve\
+          \ this?\na = -9.8\ntick 100, ->\n  move vx, vy\n  if inside(window) #alias\
+          \ to ground?\n    vy = vy + (a * dt)\n  else\n    vy = vy * -1\n  log vy\n"
+      generator_id: Copier
+      name: PencilCode0initialCode
   Direction:
     content:
     - type: text
-      value: The code above checks 100 times per second for where the mouse is and
-        turns the turtle to that direction. Press play and move your mouse cursor
-        around the turtle to watch it turn to whichever direction your cursor is pointing.
-        <b>When you're ready to get this turtle moving, click next.</b>
+      value: The code on the right checks 100 times per second for where the mouse
+        is, and turns the turtle to that direction.<div><br></div><div>Press the 'play'
+        button and move your mouse cursor around the turtle. You'll see the turtle
+        turn towards your cursor.</div><div><br></div><div><b>When you're ready to
+        get the turtle moving, click next.</b></div>
     interaction:
       customization_args:
         buttonText:
@@ -145,10 +133,90 @@ states:
         rule_specs:
         - definition:
             rule_type: default
-          dest: Velocity
+          dest: Direction Question
           feedback: []
           param_changes: []
       id: Continue
+    param_changes:
+    - customization_args:
+        parse_with_jinja: true
+        value: "speed Infinity\ntick 100, ->\n  direction = lastmousemove\n  turnto\
+          \ direction\n"
+      generator_id: Copier
+      name: PencilCode0initialCode
+  Direction Question:
+    content:
+    - type: text
+      value: Now, if we want the turtle to move in the direction of our cursor, what
+        additional piece of information do we need to add to our simulation?
+    interaction:
+      customization_args:
+        placeholder:
+          value: ''
+        rows:
+          value: 1
+      handlers:
+      - name: submit
+        rule_specs:
+        - definition:
+            inputs:
+              x: distance
+            name: Contains
+            rule_type: atomic
+            subject: answer
+          dest: Velocity
+          feedback:
+          - "Yes, our turtle is already moving in a particular direction. Since speed\
+            \ is <b>distance</b>\_travelled over time, we'll tell the turtle to move\
+            \ some distance over time."
+          param_changes: []
+        - definition:
+            inputs:
+              x: velocity
+            name: Contains
+            rule_type: atomic
+            subject: answer
+          dest: Velocity
+          feedback:
+          - "Yes, we need our turtle to move at a certain distance over time in a\
+            \ particular direction. By adding <b>distance</b>\_to our simulation,\
+            \ we'll have provided the turtle with a velocity."
+          param_changes: []
+        - definition:
+            inputs:
+              x: speed
+            name: Contains
+            rule_type: atomic
+            subject: answer
+          dest: Velocity
+          feedback:
+          - That's close enough for our purposes. While we'll need to move the turtle
+            a certain <b>distance</b> over time (i.e., speed), the turtle will be
+            headed in a particular direction, so we are adding velocity to this simulation.
+          param_changes: []
+        - definition:
+            inputs:
+              x: fast
+            name: Contains
+            rule_type: atomic
+            subject: answer
+          dest: Velocity
+          feedback:
+          - "That's close enuogh for our purposes. While we'll need to move the turtle\
+            \ a certain <b>distance</b>\_over time (speed), the turtle will be headed\
+            \ in a particular direction, so we're adding velocity to this simulation."
+          param_changes: []
+        - definition:
+            rule_type: default
+          dest: Direction Question
+          feedback:
+          - 'Not sure if I understand you correctly. In order for the turtle to face
+            our cursor, we need to give it a direction, so that it knows where to
+            face.<div><br></div><div>Next, we want to tell it: walk towards the cursor.
+            But that''s not enough, since the turtle doesn''t know how far to walk.
+            So, what other piece of information does it need?</div>'
+          param_changes: []
+      id: TextInput
     param_changes: []
   Final State:
     content:
@@ -158,7 +226,7 @@ states:
         Try changing the color of the pen to help you follow what the turtle is doing,
         and use the log window at the bottom to follow the changing values of the
         variables. If you want to challenge yourself you could get the turtle to bounce
-        up and down in a certain direction like this image below.</div><div><br></div><div>[IMAGE]</div><div><div><br></div><div>And,
+        up and down in a certain direction like this image below:</div><div><br></div><div>[IMAGE]</div><div><div><br></div><div>And,
         while you're at it, why not get the turtle to lose a little bit of its energy
         with each bounce like a ball or anything else might when it is bouncing like
         the image below?</div></div><div><br></div><div>[IMAGE]</div><div><br></div><div><div>There
@@ -188,11 +256,12 @@ states:
   First State:
     content:
     - type: text
-      value: <div>Physics is being applied in all sorts of new applications when today's
-        scientists, engineers, animators, and many others develop models and simulations
-        to make predictions and emulate the real world. We can teach the turtle to
-        move and even bounce once we provide it with the right set of instructions
-        which is also known as an algorithm.</div>
+      value: '<div>When today''s scientists, engineers, animators, and many others
+        develop models and simulations to make predictions and emulate the real world,
+        they''re often using physics.</div><div><br></div><div>In this activity, we''ll
+        use a turtle to simulate a bouncing ball.&nbsp;<span style="font-size: 1em;">We''ll
+        teach the turtle to move and even bounce by providing it with the right set
+        of instructions (also known as an <b>algorithm</b>).</span></div>'
     interaction:
       customization_args:
         buttonText:
@@ -210,15 +279,14 @@ states:
   Reflection on Bouncing:
     content:
     - type: text
-      value: '<div><span style="font-size: 1em;">Let''s teach the turtle to bounce.,
-        dDon''t worry, it won''t get hurt.! Take a moment to write out the list of
-        instructions you would use to explain to a young child what happens to a ball
-        every second it is falling. There''s no need to include equations and if you
-        would prefer, go ahead and draw a picture explaining what is happening every
-        second as a ball is falling. Feel free to use your own words but try to make
-        it as specific as possible and break it into steps. </span><b style="font-size:
-        1em;">When you have the best list of instructions you can come up with, click
-        next.</b><br></div>'
+      value: <div><span>Let's teach the turtle to bounce. Don't worry, it won't get
+        hurt!</span></div><div><span><br></span></div><div><span>Take a moment to
+        write out the list of instructions you would use to explain to a young child
+        what happens to a ball every second it is falling. There's no need to include
+        equations. If you prefer, go ahead and draw a picture explaining what is happening
+        every second as a ball is falling. Feel free to use your own words, but try
+        to make it as specific as possible and break it into steps.</span></div><div><b><br></b></div><div><span></span><b>When
+        you have the best list of instructions you can come up with, click 'Next'.</b><br></div>
     interaction:
       customization_args:
         buttonText:
@@ -236,14 +304,16 @@ states:
   Velocity:
     content:
     - type: text
-      value: '<div><span style="font-size: 1em;">Now we have set our turtle''s distance
-        to 1 (see line ____) and added to the set of instructions that repeat 100
-        times every second to move the turtle forward (see fd on line ____) by that
-        distance. So as time passes, the turtle moves a certain distance over time
-        in a particular direction which we call the turtle''s velocity. Press the
-        play button and move your mouse as before, but now watch as the turtle follows
-        you around. We''ve attached a pen to the turtle''s belly so you can see the
-        path it took. Click next when you''re ready to move on.</span><br></div><div><br></div>'
+      value: <div><span>In the modified code on the right, we've now set our turtle's
+        distance to 1 (see line 3) and added to the set of instructions that repeat
+        100 times every second to move the turtle forward (see fd on line 6) by that
+        distance.</span></div><div><span><br></span></div><div><span>So, as time passes,
+        the turtle moves a certain distance over time (i.e., velocity) in a particular
+        direction.</span></div><div><span><br></span></div><div><span>Press the play
+        button and move your mouse as before, but now watch as the turtle follows
+        you around. We've attached a pen to the turtle's belly so you can see the
+        path it took.</span></div><div><span><br></span></div><div><span><b>Click
+        'Next' when you're ready to move on.</b></span><br></div><div><br></div>
     interaction:
       customization_args:
         buttonText:
@@ -257,4 +327,10 @@ states:
           feedback: []
           param_changes: []
       id: Continue
-    param_changes: []
+    param_changes:
+    - customization_args:
+        parse_with_jinja: true
+        value: "speed Infinity\npen purple\ndistance = 1\ntick 100, ->\n  turnto lastmousemove\n\
+          \  fd distance\n"
+      generator_id: Copier
+      name: PencilCode0initialCode

@@ -25,6 +25,9 @@ oppia.directive('snapshotsSkin', [function() {
     templateUrl: 'skins/Snapshots',
     controller: ['$scope', 'warningsData', 'oppiaPlayerService',
         function($scope, warningsData, oppiaPlayerService) {
+
+      var currentStateName = oppiaPlayerService.getCurrentStateName();
+
       $scope.initializePage = function() {
         $scope.inputTemplate = '';
         $scope.currentQuestion = '';
@@ -32,11 +35,24 @@ oppia.directive('snapshotsSkin', [function() {
           $scope.currentQuestion = initHtml;
           $scope.inputTemplate = oppiaPlayerService.getInteractionHtml(stateName);
           $scope.explorationTitle = oppiaPlayerService.getExplorationTitle();
-          $scope.gadgetPanelsHtml = oppiaPlayerService.getGadgetPanelsHtml();
+          $scope.gadgetPanelsContents = oppiaPlayerService.getGadgetPanelsContents();
+          currentStateName = stateName;
         });
       };
 
+      $scope.upcomingQuestionHtml = null;
+      $scope.upcomingInputTemplate = null;
       $scope.initializePage();
+
+      $scope.nextQuestionHtml = '';
+      $scope.onClickContinue = function() {
+        $scope.currentQuestion = $scope.upcomingQuestionHtml;
+        $scope.inputTemplate = $scope.upcomingInputTemplate;
+        $scope.upcomingQuestionHtml = null;
+        $scope.upcomingInputTemplate = null;
+        $scope.feedbackHtml = '';
+        oppiaPlayerService.applyCachedParamUpdates();
+      };
 
       $scope.submitAnswer = function(answer, handler) {
         oppiaPlayerService.submitAnswer(answer, handler, function(
@@ -47,15 +63,38 @@ oppia.directive('snapshotsSkin', [function() {
             return;
           }
 
-          if (refreshInteraction) {
-            $scope.inputTemplate = oppiaPlayerService.getInteractionHtml(
-              newStateName) + oppiaPlayerService.getRandomSuffix();
+          $scope.feedbackHtml = feedbackHtml;
+
+          if (feedbackHtml) {
+            if (currentStateName === newStateName) {
+              $scope.upcomingQuestionHtml = null;
+              if (refreshInteraction) {
+                $scope.inputTemplate = oppiaPlayerService.getInteractionHtml(
+                  newStateName) + oppiaPlayerService.getRandomSuffix();
+              }
+            } else {
+              $scope.inputTemplate = '';
+              $scope.upcomingQuestionHtml = questionHtml + oppiaPlayerService.getRandomSuffix();
+              if (refreshInteraction) {
+                $scope.upcomingInputTemplate = oppiaPlayerService.getInteractionHtml(
+                  newStateName) + oppiaPlayerService.getRandomSuffix();
+              } else {
+                $scope.upcomingInputTemplate = '';
+              }
+            }
+          } else {
+            // The randomSuffix is also needed for 'previousReaderAnswer', 'feedback'
+            // and 'question', so that the aria-live attribute will read it out.
+            $scope.currentQuestion = questionHtml + oppiaPlayerService.getRandomSuffix();
+            if (refreshInteraction) {
+              $scope.inputTemplate = oppiaPlayerService.getInteractionHtml(
+                newStateName) + oppiaPlayerService.getRandomSuffix();
+            }
+            oppiaPlayerService.applyCachedParamUpdates();
           }
 
-          // The randomSuffix is also needed for 'previousReaderAnswer', 'feedback'
-          // and 'question', so that the aria-live attribute will read it out.
-          $scope.currentQuestion = questionHtml + oppiaPlayerService.getRandomSuffix();
-        });
+          currentStateName = newStateName;
+        }, true);
       };
     }]
   };

@@ -209,33 +209,18 @@ oppia.factory('oppiaPlayerService', [
     return ($('<div>').append(el)).html();
   };
 
-  // Generate HTML directives for the given gadgetId and customization args.
-  var _getGadgetHtml = function(gadgetId, gadgetCustomizationArgSpecs) {
-    var el = $(
-      '<oppia-gadget-' + $filter('camelCaseToHyphens')(gadgetId) + '>');
-
-    el = _formatCustomizationArgAttributesForElement(el, gadgetCustomizationArgSpecs);
-
-    return ($('<div>').append(el)).html();
-  };
-
-  // Converts a gadget's panelContents to HTML for each directive.
-  var _getGadgetPanelHtml = function(panelContents) {
-    var resultHtml = '';
-    for (var i = 0; i < panelContents.length; i++) {
-      resultHtml += _getGadgetHtml(
-        panelContents[i]['gadget_id'],
-        panelContents[i]['customization_args']
-      );
-    }
-    return resultHtml;
-  }
-
   var stopwatch = stopwatchProviderService.getInstance();
 
+  var cachedParamUpdates = {
+    params: null,
+    newStateName: null
+  };
+
+  // If delayParamUpdates is true, the parameters will need to be updated manually
+  // by calling applyCachedParamUpdates().
   var _onStateTransitionProcessed = function(
       newStateName, newParams, newQuestionHtml, newFeedbackHtml, answer,
-      handler, successCallback) {
+      handler, successCallback, delayParamUpdates) {
     var oldStateName = _currentStateName;
     var oldStateInteractionId = _exploration.states[oldStateName].interaction.id;
 
@@ -263,16 +248,16 @@ oppia.factory('oppiaPlayerService', [
       });
     }
 
-    _updateStatus(newParams, newStateName);
+    if (!delayParamUpdates) {
+      _updateStatus(newParams, newStateName);
+    } else {
+      cachedParamUpdates.params = angular.copy(newParams);
+      cachedParamUpdates.newStateName = angular.copy(newStateName);
+    }
     stopwatch.resetStopwatch();
 
-    // NB: This may be undefined if newStateName === END_DEST.
+    // NB: These may both be undefined if newStateName === END_DEST.
     var newStateData = _exploration.states[newStateName];
-    if (newStateData) {
-      learnerParamsService.init(newParams);
-    }
-
-    // NB: This may be undefined if newStateName === END_DEST.
     var newInteractionId = newStateData ? newStateData.interaction.id : undefined;
 
     $rootScope.$broadcast('playerStateChange');
@@ -377,6 +362,11 @@ oppia.factory('oppiaPlayerService', [
         });
       }
     },
+    applyCachedParamUpdates: function() {
+      _updateStatus(cachedParamUpdates.params, cachedParamUpdates.newStateName);
+      cachedParamUpdates.params = null;
+      cachedParamUpdates.newStateName = null;
+    },
     getExplorationId: function() {
       return _explorationId;
     },
@@ -392,13 +382,8 @@ oppia.factory('oppiaPlayerService', [
         _exploration.states[stateName].interaction.customization_args,
         labelForFocusTarget);
     },
-    getGadgetPanelsHtml: function() {
-      var result = {};
-      var panelContents = _exploration.skin_customizations.panels_contents;
-      for (var panelName in panelContents) {
-        result[panelName] = _getGadgetPanelHtml(panelContents[panelName]);
-      }
-      return result;
+    getGadgetPanelsContents: function() {
+      return angular.copy(_exploration.skin_customizations.panels_contents);
     },
     isInteractionInline: function(stateName) {
       var interactionId = _exploration.states[stateName].interaction.id;
@@ -448,7 +433,7 @@ oppia.factory('oppiaPlayerService', [
       }
       return ($('<div>').append(el)).html();
     },
-    submitAnswer: function(answer, handler, successCallback) {
+    submitAnswer: function(answer, handler, successCallback, delayParamUpdates) {
       if (answerIsBeingProcessed) {
         return;
       }
@@ -488,7 +473,7 @@ oppia.factory('oppiaPlayerService', [
           _onStateTransitionProcessed(
             clientEvalResult.state_name, clientEvalResult.params,
             clientEvalResult.question_html, clientEvalResult.feedback_html,
-            answer, handler, successCallback);
+            answer, handler, successCallback, delayParamUpdates);
         } else {
           answerIsBeingProcessed = false;
           warningsData.addWarning('Expression parsing error.');

@@ -256,7 +256,7 @@ DEMO_EXPLORATIONS = [
      'Welcome'),
     # EXPERIMENTAL: NOT FOR MERGER TO ANY STABLE BRANCH.
     #######################################################
-    ('pencilcode.yaml', 'Pencil Code Test', 'Programming'),
+    ('pencilcode.yaml', 'Bouncing Ball', 'Programming'),
 ]
 
 # TODO(sll): Add all other URLs here.

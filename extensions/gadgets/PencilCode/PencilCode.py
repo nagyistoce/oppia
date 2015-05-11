@@ -24,32 +24,7 @@ class PencilCode(base.BaseGadget):
     description = 'An interactive Pencil Code editor.'
     _dependency_ids = []
 
-    _customization_arg_specs = [{
-        'name': 'initialCode',
-        'description': 'Initial code for the pencil code editor.',
-        'schema': {
-            'type': 'unicode',
-            'ui_config': {
-                'rows': 10,
-            }
-        },
-        'default_value': '\n'.join([
-          'speed 5',
-          'dot yellow, 160',
-          'fd 20',
-          'rt 90',
-          'fd 25',
-          'dot black, 20',
-          'bk 50',
-          'dot black, 20',
-          'bk 5',
-          'rt 90',
-          'fd 40',
-          'pen black, 7',
-          'lt 30',
-          'lt 120, 35'
-        ])
-    }]
+    _customization_arg_specs = []
 
     # Constants for height and width.
     # Static placeholders for now.

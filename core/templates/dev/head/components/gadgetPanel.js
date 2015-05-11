@@ -22,8 +22,44 @@ oppia.directive('oppiaGadgetPanel', function() {
   return {
     restrict: 'E',
     scope: {
-      panelHtml: '&',
+      panelContents: '&',
     },
     templateUrl: 'components/gadgetPanel'
+  };
+});
+
+oppia.directive('oppiaGadget', function() {
+  return {
+    restrict: 'E',
+    scope: {
+      gadgetId: '&',
+      gadgetCustomizationArgs: '&',
+      showInStates: '&'
+    },
+    templateUrl: 'components/gadget',
+    controller: ['$scope', '$filter', 'oppiaPlayerService', function($scope, $filter, oppiaPlayerService) {
+      // Formats CustomizationArgSpecs as angular attributes for the given element.
+      // TODO(sll): Refactor; this duplicates the same method in PlayerServices.js.
+      var _formatCustomizationArgAttributesForElement = function(element, customizationArgSpecs) {
+        for (var caSpecName in customizationArgSpecs) {
+          var caSpecValue = customizationArgSpecs[caSpecName].value;
+          element.attr(
+            $filter('camelCaseToHyphens')(caSpecName) + '-with-value',
+            oppiaHtmlEscaper.objToEscapedJson(caSpecValue));
+        }
+        return element;
+      }
+
+      var el = $(
+        '<oppia-gadget-' + $filter('camelCaseToHyphens')($scope.gadgetId()) + '>');
+      el = _formatCustomizationArgAttributesForElement(el, $scope.gadgetCustomizationArgs());
+      $scope.gadgetHtml = ($('<div>').append(el)).html();
+
+      $scope.$watch(function() {
+        return oppiaPlayerService.getCurrentStateName();
+      }, function(currentStateName) {
+        $scope.isVisible = $scope.showInStates().indexOf(currentStateName) !== -1;
+      });
+    }]
   };
 });

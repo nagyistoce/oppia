@@ -25,25 +25,31 @@ oppia.directive('oppiaGadgetPencilCode', [
     return {
       restrict: 'E',
       templateUrl: 'gadget/PencilCode',
-      controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
-        var _initialCode = oppiaHtmlEscaper.escapedJsonToObj($attrs.initialCodeWithValue);
+      controller: ['$scope', '$element', function ($scope, $element) {
+
+        $scope.$watch(function() {
+          return learnerParamsService.getValue('PencilCode0initialCode');
+        }, function(newValue, oldValue) {
+          $scope.resetGadget(newValue);
+        });
 
         var pce = new PencilCodeEmbed($element[0].children[0]);
 
-        // TODO(sll): this is not working.
-        pce.on('updated', function(code) {
-          console.log('new code: ' + code);
-        });
+        $scope.resetGadget = function(initialCode) {
+          pce.on('updated', function(code) {
+            console.log('new code: ' + code);
+          });
 
-        pce.on('load', function() {
-          console.log('load complete');
-          pce.showNotification('Pay attention to the Turtle!');
-          setTimeout(function(){
-            pce.hideNotification();
-            pce.beginRun();
-          }, 2000);
-        });
-        pce.beginLoad(_initialCode);
+          pce.on('load', function() {
+            // pce.showNotification('Pay attention to the Turtle!');
+            setTimeout(function(){
+              // pce.hideNotification();
+              // pce.beginRun();
+            }, 2000);
+          });
+
+          pce.beginLoad(initialCode);
+        };
       }],
     }
   }
